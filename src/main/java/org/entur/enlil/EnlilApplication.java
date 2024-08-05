@@ -1,0 +1,13 @@
+package org.entur.enlil;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class EnlilApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(EnlilApplication.class, args);
+    }
+
+}
