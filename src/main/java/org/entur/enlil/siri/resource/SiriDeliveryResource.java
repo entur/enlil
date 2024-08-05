@@ -5,6 +5,7 @@ import org.entur.enlil.siri.service.EstimatedTimetableDeliveryService;
 import org.entur.enlil.siri.service.SituationExchangeDeliveryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,11 @@ public class SiriDeliveryResource {
 
     @ExceptionHandler(InvalidServiceRequestException.class)
     public String handleInvalidServiceRequestException(InvalidServiceRequestException ex) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid ServiceRequest</Body></Message></Response>";
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid XML</Body></Message></Response>";
     }
 }
