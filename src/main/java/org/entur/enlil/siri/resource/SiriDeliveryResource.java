@@ -1,9 +1,11 @@
 package org.entur.enlil.siri.resource;
 
+import org.entur.enlil.siri.error.InvalidServiceRequestException;
 import org.entur.enlil.siri.service.EstimatedTimetableDeliveryService;
 import org.entur.enlil.siri.service.SituationExchangeDeliveryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +38,11 @@ public class SiriDeliveryResource {
             }
         }
 
-        throw new IllegalArgumentException("Illegal request");
+        throw new InvalidServiceRequestException();
+    }
+
+    @ExceptionHandler(InvalidServiceRequestException.class)
+    public String handleInvalidServiceRequestException(InvalidServiceRequestException ex) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid XML</Body></Message></Response>";
     }
 }
