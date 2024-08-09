@@ -13,6 +13,26 @@
  * limitations under the Licence.
  */
 
-package org.entur.enlil.siri.error;
+package org.entur.enlil.siri.helpers;
 
-public class InvalidServiceRequestException extends RuntimeException {}
+import javax.annotation.Nonnull;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class DateMapper {
+
+    private DateMapper() {
+    }
+
+    public static ZonedDateTime mapISOStringToZonedDateTime(@Nonnull String date) {
+        return ZonedDateTime.of(
+                LocalDateTime.parse(
+                        date,
+                        DateTimeFormatter.ISO_DATE_TIME
+                ),
+                ZoneOffset.UTC
+        );
+    }
+}
