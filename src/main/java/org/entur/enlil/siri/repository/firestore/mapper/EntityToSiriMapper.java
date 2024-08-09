@@ -95,7 +95,6 @@ public class EntityToSiriMapper {
                 )
         ));
 
-        // affects
         ptSituationElement.setAffects(
                 SiriObjectFactory.createAffectsScopeStructure(
                         Optional.ofNullable(
@@ -149,57 +148,4 @@ public class EntityToSiriMapper {
 
         return ptSituationElement;
     }
-
-    /*
-
-
-        ptSituationElement.setAffects(
-                SiriObjectFactory.createAffectsScopeStructure(
-                Optional.ofNullable(
-                queryDocumentSnapshot.get(
-                FieldPath.of(
-                "Affects",
-                "Networks",
-                "AffectedNetwork",
-                "AffectedLine",
-                "LineRef"
-                ),
-    String.class
-                                )
-                                        )
-                                        .map(lineRef -> {
-        var affectedStopPoints = Optional.ofNullable(
-                queryDocumentSnapshot.get(
-                        FieldPath.of(
-                                "Affects",
-                                "Networks",
-                                "AffectedNetwork",
-                                "AffectedLine",
-                                "Routes",
-                                "AffectedRoute",
-                                "StopPoints",
-                                "AffectedStopPoint"
-                        ),
-                        List.class
-                )
-        ).map(refs -> {
-            List<String> stopPointRefs = (List<String>) refs;
-            return stopPointRefs.stream()
-                    .map(SiriObjectFactory::createAffectedStopPointStructure)
-                    .toList();
-        }).orElse(null);
-
-        return SiriObjectFactory.createAffectedNetwork(lineRef, affectedStopPoints);
-    })
-            .orElse(null),
-                        null,
-                                null
-                                )
-                                );
-
-
-
-        return ptSituationElement;
-}
-     */
 }
