@@ -31,5 +31,5 @@ jobs:
     with:
       build_artefact_path: target
   docker-push:
-    needs: [docker-lint, maven-build]
+    needs: [docker-lint, docker-build]
     uses: entur/gha-docker/.github/workflows/push.yml@v1
