@@ -22,15 +22,15 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ secrets.ARTIFACTORY_USER }}
           GITHUB_TOKEN: ${{ secrets.ARTIFACTORY_APIKEY }}
-      - uses: gradle/actions/setup-gradle@v3
       - run: |
           mvn verify
       - uses: actions/upload-artifact@v4.3.3
         with:
-          path: target
+          path: target/*.jar
   docker-build:
     needs: [docker-lint, maven-verify]
     uses: entur/gha-docker/.github/workflows/build.yml@v1
     with:
+      build_artifact-name: enlil-0.0.1-SNAPSHOT.jar
       build_artifact_path: target
 

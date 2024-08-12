@@ -4,7 +4,7 @@ RUN apk update && apk upgrade && apk add --no-cache \
     tini=0.19.0-r1
 
 WORKDIR /deployments
-COPY target/enlil-*-SNAPSHOT.jar deneir.jar
+COPY target/enlil-*-SNAPSHOT.jar enlil.jar
 RUN addgroup appuser && adduser --disabled-password appuser --ingroup appuser
 USER appuser
 
