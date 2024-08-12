@@ -10,6 +10,7 @@ common:
   deployment:
     prometheus:
       enabled: true
+      path: /actuator/prometheus
     replicas: 1
   container:
     image: <+artifacts.primary.image>
@@ -19,4 +20,10 @@ common:
       enabled: true
     probes:
       liveness:
-        path: "/alive"
+        path: /actuator/health/liveness
+        periodSeconds: 10
+        failureThreshold: 3
+      readiness:
+        path: /actuator/health/readiness
+        periodSeconds: 10
+        failureThreshold: 3
