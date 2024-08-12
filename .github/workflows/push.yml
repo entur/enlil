@@ -1,0 +1,30 @@
+name: Build and push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  docker-lint:
+    uses: entur/gha-docker/.github/workflows/lint.yml@v1
+  maven-verify:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: 21.0.1-12
+          distribution: liberica
+          cache: 'maven'
+        env:
+          GITHUB_ACTOR: ${{ secrets.ARTIFACTORY_USER }}
+          GITHUB_TOKEN: ${{ secrets.ARTIFACTORY_APIKEY }}
+      - uses: gradle/actions/setup-gradle@v3
+      - run: |
+          mvn verify
+  docker-push:
+    needs: [docker-lint, maven-verify]
+    uses: entur/gha-docker/.github/workflows/push.yml@v1
