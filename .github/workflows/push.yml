@@ -9,9 +9,14 @@ jobs:
   docker-lint:
     uses: entur/gha-docker/.github/workflows/lint.yml@v1
   terraform-validate:
-    uses: devops-infra/action-terraform-validate@v0.3.1
-    with:
-      dir_filter: terraform
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: devops-infra/action-terraform-validate@v0.3.1
+        with:
+          dir_filter: terraform
   maven-verify:
     runs-on: ubuntu-24.04
     permissions:
