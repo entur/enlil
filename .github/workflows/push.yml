@@ -31,6 +31,6 @@ jobs:
     needs: [docker-lint, maven-verify]
     uses: entur/gha-docker/.github/workflows/build.yml@v1
     with:
-      build_artifact-name: enlil-0.0.1-SNAPSHOT.jar
+      build_artifact_name: enlil-0.0.1-SNAPSHOT.jar
       build_artifact_path: target
 
