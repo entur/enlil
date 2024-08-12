@@ -22,7 +22,7 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ secrets.ARTIFACTORY_USER }}
           GITHUB_TOKEN: ${{ secrets.ARTIFACTORY_APIKEY }}
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
       - run: |
           mvn verify
   docker-push:
