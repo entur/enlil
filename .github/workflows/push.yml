@@ -25,6 +25,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v3
       - run: |
           mvn verify
+  docker-build:
+    needs: [maven-verify]
+    uses: entur/gha-docker/.github/workflows/build.yml@v1
+    with:
+      build_artefact_path: target
   docker-push:
-    needs: [docker-lint, maven-verify]
+    needs: [docker-lint, maven-build]
     uses: entur/gha-docker/.github/workflows/push.yml@v1
