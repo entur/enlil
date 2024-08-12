@@ -1,0 +1,11 @@
+common:
+  env: prod
+  ingress:
+    host:
+      enlil.entur.org
+  configmap:
+    enabled: true
+    data:
+      application.properties: |-
+        spring.cloud.gcp.firestore.enabled=true
+        spring.cloud.gcp.firestore.project-id=deviation-messages-prod

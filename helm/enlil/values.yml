@@ -1,0 +1,22 @@
+common:
+  app: enlil
+  shortname: enlil
+  team: team-ror
+  ingress:
+    enabled: true
+    trafficType: public
+  service:
+    internalPort: 8080
+  deployment:
+    prometheus:
+      enabled: true
+    replicas: 1
+  container:
+    image: <+artifacts.primary.image>
+    cpu: 0.3
+    memory: 128
+    prometheus:
+      enabled: true
+    probes:
+      liveness:
+        path: "/alive"
