@@ -37,7 +37,7 @@ jobs:
         with:
           path: target/*.jar
   docker-build:
-    needs: [docker-lint, maven-verify]
+    needs: [docker-lint, terraform-validate, maven-verify]
     uses: entur/gha-docker/.github/workflows/build.yml@v1
     with:
       build_artifact_name: artifact
