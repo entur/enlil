@@ -9,3 +9,5 @@ common:
       application.properties: |-
         spring.cloud.gcp.firestore.enabled=true
         spring.cloud.gcp.firestore.project-id=deviation-messages-staging
+        management.endpoints.web.exposure.include=*
+        management.endpoint.health.show.details=always
