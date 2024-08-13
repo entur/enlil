@@ -6,10 +6,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnlilConfiguration {
 
-    @Value("${enlil.siri.default.producerRef:ENT}")
-    private String producerRef;
+  @Value("${enlil.siri.default.producerRef:ENT}")
+  private String producerRef;
 
-    public String getProducerRef() {
-        return producerRef;
-    }
+  public String getProducerRef() {
+    return producerRef;
+  }
 }

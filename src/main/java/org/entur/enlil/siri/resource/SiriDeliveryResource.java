@@ -33,37 +33,45 @@ import uk.org.siri.siri21.Siri;
 @RequestMapping("/siri")
 public class SiriDeliveryResource {
 
-    private final SituationExchangeDeliveryService situationExchangeDeliveryService;
-    private final EstimatedTimetableDeliveryService estimatedTimetableDeliveryService;
+  private final SituationExchangeDeliveryService situationExchangeDeliveryService;
+  private final EstimatedTimetableDeliveryService estimatedTimetableDeliveryService;
 
-    public SiriDeliveryResource(SituationExchangeDeliveryService situationExchangeDeliveryService, EstimatedTimetableDeliveryService estimatedTimetableDeliveryService) {
-        this.situationExchangeDeliveryService = situationExchangeDeliveryService;
-        this.estimatedTimetableDeliveryService = estimatedTimetableDeliveryService;
+  public SiriDeliveryResource(
+    SituationExchangeDeliveryService situationExchangeDeliveryService,
+    EstimatedTimetableDeliveryService estimatedTimetableDeliveryService
+  ) {
+    this.situationExchangeDeliveryService = situationExchangeDeliveryService;
+    this.estimatedTimetableDeliveryService = estimatedTimetableDeliveryService;
+  }
+
+  @ResponseStatus(HttpStatus.OK)
+  @PostMapping(
+    consumes = MediaType.APPLICATION_XML_VALUE,
+    produces = MediaType.APPLICATION_XML_VALUE
+  )
+  public Siri requestServiceDelivery(@RequestBody Siri request) {
+    var serviceRequest = request.getServiceRequest();
+
+    if (serviceRequest != null) {
+      if (!serviceRequest.getEstimatedTimetableRequests().isEmpty()) {
+        return estimatedTimetableDeliveryService.getEstimatedTimetableDelivery();
+      } else if (!serviceRequest.getSituationExchangeRequests().isEmpty()) {
+        return situationExchangeDeliveryService.getSituationExchangeDelivery();
+      }
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
-    public Siri requestServiceDelivery(@RequestBody Siri request) {
-        var serviceRequest = request.getServiceRequest();
+    throw new InvalidServiceRequestException();
+  }
 
-        if (serviceRequest != null ) {
-            if (!serviceRequest.getEstimatedTimetableRequests().isEmpty()) {
-                return estimatedTimetableDeliveryService.getEstimatedTimetableDelivery();
-            } else if (!serviceRequest.getSituationExchangeRequests().isEmpty()) {
-                return situationExchangeDeliveryService.getSituationExchangeDelivery();
-            }
-        }
+  @ExceptionHandler(InvalidServiceRequestException.class)
+  public String handleInvalidServiceRequestException(InvalidServiceRequestException ex) {
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid ServiceRequest</Body></Message></Response>";
+  }
 
-        throw new InvalidServiceRequestException();
-    }
-
-    @ExceptionHandler(InvalidServiceRequestException.class)
-    public String handleInvalidServiceRequestException(InvalidServiceRequestException ex) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid ServiceRequest</Body></Message></Response>";
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public String handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid XML</Body></Message></Response>";
-    }
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public String handleHttpMessageNotReadableException(
+    HttpMessageNotReadableException ex
+  ) {
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Message><Body>Invalid XML</Body></Message></Response>";
+  }
 }

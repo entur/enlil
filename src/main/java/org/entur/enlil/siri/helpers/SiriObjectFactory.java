@@ -15,6 +15,11 @@
 
 package org.entur.enlil.siri.helpers;
 
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
+import javax.annotation.Nonnull;
 import org.entur.enlil.configuration.EnlilConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,205 +48,228 @@ import uk.org.siri.siri21.SituationSourceStructure;
 import uk.org.siri.siri21.SituationSourceTypeEnumeration;
 import uk.org.siri.siri21.StopPointRefStructure;
 
-import javax.annotation.Nonnull;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-
 @Service
 public class SiriObjectFactory {
-    public static final String FALLBACK_SIRI_VERSION = "2.1";
 
-    private final EnlilConfiguration configuration;
+  public static final String FALLBACK_SIRI_VERSION = "2.1";
 
-    public SiriObjectFactory(@Autowired EnlilConfiguration enlilConfiguration) {
-        this.configuration = enlilConfiguration;
+  private final EnlilConfiguration configuration;
+
+  public SiriObjectFactory(@Autowired EnlilConfiguration enlilConfiguration) {
+    this.configuration = enlilConfiguration;
+  }
+
+  public Siri createSXServiceDelivery(Collection<PtSituationElement> elements) {
+    Siri siri = createSiriObject(FALLBACK_SIRI_VERSION);
+    ServiceDelivery delivery = createServiceDelivery();
+    SituationExchangeDeliveryStructure deliveryStructure =
+      new SituationExchangeDeliveryStructure();
+    SituationExchangeDeliveryStructure.Situations situations =
+      new SituationExchangeDeliveryStructure.Situations();
+    situations.getPtSituationElements().addAll(elements);
+    deliveryStructure.setSituations(situations);
+    deliveryStructure.setResponseTimestamp(ZonedDateTime.now());
+    delivery.getSituationExchangeDeliveries().add(deliveryStructure);
+    siri.setServiceDelivery(delivery);
+    return siri;
+  }
+
+  public Siri createETServiceDelivery(Collection<EstimatedVehicleJourney> elements) {
+    Siri siri = createSiriObject(FALLBACK_SIRI_VERSION);
+    ServiceDelivery delivery = createServiceDelivery();
+    EstimatedTimetableDeliveryStructure deliveryStructure =
+      new EstimatedTimetableDeliveryStructure();
+    deliveryStructure.setVersion(FALLBACK_SIRI_VERSION);
+    EstimatedVersionFrameStructure estimatedVersionFrameStructure =
+      new EstimatedVersionFrameStructure();
+    estimatedVersionFrameStructure.setRecordedAtTime(ZonedDateTime.now());
+    estimatedVersionFrameStructure.getEstimatedVehicleJourneies().addAll(elements);
+    deliveryStructure
+      .getEstimatedJourneyVersionFrames()
+      .add(estimatedVersionFrameStructure);
+    deliveryStructure.setResponseTimestamp(ZonedDateTime.now());
+
+    delivery.getEstimatedTimetableDeliveries().add(deliveryStructure);
+    siri.setServiceDelivery(delivery);
+    return siri;
+  }
+
+  private ServiceDelivery createServiceDelivery() {
+    ServiceDelivery delivery = new ServiceDelivery();
+    delivery.setResponseTimestamp(ZonedDateTime.now());
+    if (configuration != null && configuration.getProducerRef() != null) {
+      delivery.setProducerRef(createRequestorRef(configuration.getProducerRef()));
+    }
+    return delivery;
+  }
+
+  private static Siri createSiriObject(@Nonnull String version) {
+    Siri siri = new Siri();
+    siri.setVersion(version);
+    return siri;
+  }
+
+  public static RequestorRef createRequestorRef(String value) {
+    if (value == null) {
+      value = UUID.randomUUID().toString();
+    }
+    RequestorRef requestorRef = new RequestorRef();
+    requestorRef.setValue(value);
+    return requestorRef;
+  }
+
+  public static SituationNumber createSituationNumber(String value) {
+    SituationNumber situationNumber = new SituationNumber();
+    situationNumber.setValue(value);
+    return situationNumber;
+  }
+
+  public static SituationSourceStructure createSituationSourceStructure(
+    String situationSourceType
+  ) {
+    var type = new SituationSourceStructure();
+    type.setSourceType(SituationSourceTypeEnumeration.fromValue(situationSourceType));
+    return type;
+  }
+
+  public static HalfOpenTimestampOutputRangeStructure createValidityPeriod(
+    @Nonnull String startTime,
+    String endTime
+  ) {
+    var validityPeriod = new HalfOpenTimestampOutputRangeStructure();
+    validityPeriod.setStartTime(DateMapper.mapISOStringToZonedDateTime(startTime));
+
+    if (endTime != null) {
+      validityPeriod.setEndTime(DateMapper.mapISOStringToZonedDateTime(endTime));
     }
 
-    public Siri createSXServiceDelivery(Collection<PtSituationElement> elements) {
-        Siri siri = createSiriObject(FALLBACK_SIRI_VERSION);
-        ServiceDelivery delivery = createServiceDelivery();
-        SituationExchangeDeliveryStructure deliveryStructure = new SituationExchangeDeliveryStructure();
-        SituationExchangeDeliveryStructure.Situations situations = new SituationExchangeDeliveryStructure.Situations();
-        situations.getPtSituationElements().addAll(elements);
-        deliveryStructure.setSituations(situations);
-        deliveryStructure.setResponseTimestamp(ZonedDateTime.now());
-        delivery.getSituationExchangeDeliveries().add(deliveryStructure);
-        siri.setServiceDelivery(delivery);
-        return siri;
+    return validityPeriod;
+  }
+
+  public static DefaultedTextStructure createDefaultedTextStructure(
+    String lang,
+    String value
+  ) {
+    DefaultedTextStructure defaultedTextStructure = new DefaultedTextStructure();
+    defaultedTextStructure.setLang(lang);
+    defaultedTextStructure.setValue(value);
+    return defaultedTextStructure;
+  }
+
+  public static PtSituationElement.InfoLinks createInfoLinks(
+    InfoLinkStructure infoLinkStructure
+  ) {
+    PtSituationElement.InfoLinks infoLinks = new PtSituationElement.InfoLinks();
+    infoLinks.getInfoLinks().add(infoLinkStructure);
+    return infoLinks;
+  }
+
+  public static InfoLinkStructure createInfoLinkStructure(
+    @Nonnull String uri,
+    String label
+  ) {
+    InfoLinkStructure infoLinkStructure = new InfoLinkStructure();
+    infoLinkStructure.setUri(uri);
+    if (label != null) {
+      NaturalLanguageStringStructure naturalLanguageStringStructure =
+        new NaturalLanguageStringStructure();
+      naturalLanguageStringStructure.setValue(label);
+      infoLinkStructure.getLabels().add(naturalLanguageStringStructure);
+    }
+    return infoLinkStructure;
+  }
+
+  public static AffectsScopeStructure createAffectsScopeStructure(
+    AffectsScopeStructure.Networks.AffectedNetwork affectedNetwork,
+    List<AffectedStopPointStructure> affectedStopPointStructures,
+    AffectedVehicleJourneyStructure affectedVehicleJourneyStructure
+  ) {
+    AffectsScopeStructure affectsScopeStructure = new AffectsScopeStructure();
+
+    if (affectedNetwork != null) {
+      AffectsScopeStructure.Networks networks = new AffectsScopeStructure.Networks();
+      networks.getAffectedNetworks().add(affectedNetwork);
+      affectsScopeStructure.setNetworks(networks);
     }
 
-    public Siri createETServiceDelivery(Collection<EstimatedVehicleJourney> elements) {
-        Siri siri = createSiriObject(FALLBACK_SIRI_VERSION);
-        ServiceDelivery delivery = createServiceDelivery();
-        EstimatedTimetableDeliveryStructure deliveryStructure = new EstimatedTimetableDeliveryStructure();
-        deliveryStructure.setVersion(FALLBACK_SIRI_VERSION);
-        EstimatedVersionFrameStructure estimatedVersionFrameStructure = new EstimatedVersionFrameStructure();
-        estimatedVersionFrameStructure.setRecordedAtTime(ZonedDateTime.now());
-        estimatedVersionFrameStructure.getEstimatedVehicleJourneies().addAll(elements);
-        deliveryStructure.getEstimatedJourneyVersionFrames().add(estimatedVersionFrameStructure);
-        deliveryStructure.setResponseTimestamp(ZonedDateTime.now());
-
-        delivery.getEstimatedTimetableDeliveries().add(deliveryStructure);
-        siri.setServiceDelivery(delivery);
-        return siri;
+    if (affectedStopPointStructures != null) {
+      AffectsScopeStructure.StopPoints stopPoints =
+        new AffectsScopeStructure.StopPoints();
+      stopPoints.getAffectedStopPoints().addAll(affectedStopPointStructures);
+      affectsScopeStructure.setStopPoints(stopPoints);
     }
 
-    private ServiceDelivery createServiceDelivery() {
-        ServiceDelivery delivery = new ServiceDelivery();
-        delivery.setResponseTimestamp(ZonedDateTime.now());
-        if (configuration != null && configuration.getProducerRef() != null) {
-            delivery.setProducerRef(createRequestorRef(configuration.getProducerRef()));
-        }
-        return delivery;
+    if (affectedVehicleJourneyStructure != null) {
+      AffectsScopeStructure.VehicleJourneys vehicleJourneys =
+        new AffectsScopeStructure.VehicleJourneys();
+      vehicleJourneys.getAffectedVehicleJourneies().add(affectedVehicleJourneyStructure);
+      affectsScopeStructure.setVehicleJourneys(vehicleJourneys);
     }
 
-    private static Siri createSiriObject(@Nonnull String version) {
-        Siri siri = new Siri();
-        siri.setVersion(version);
-        return siri;
+    return affectsScopeStructure;
+  }
+
+  public static AffectedVehicleJourneyStructure createAffectedVehicleJourneyStructure(
+    String dataFrameRef,
+    String datedVehicleJourneyRef,
+    List<AffectedStopPointStructure> affectedStopPointStructures
+  ) {
+    AffectedVehicleJourneyStructure affectedVehicleJourneyStructure =
+      new AffectedVehicleJourneyStructure();
+    FramedVehicleJourneyRefStructure framedVehicleJourneyRefStructure =
+      new FramedVehicleJourneyRefStructure();
+    DataFrameRefStructure dataFrameRefStructure = new DataFrameRefStructure();
+    dataFrameRefStructure.setValue(dataFrameRef);
+    framedVehicleJourneyRefStructure.setDataFrameRef(dataFrameRefStructure);
+    framedVehicleJourneyRefStructure.setDatedVehicleJourneyRef(datedVehicleJourneyRef);
+    affectedVehicleJourneyStructure.setFramedVehicleJourneyRef(
+      framedVehicleJourneyRefStructure
+    );
+
+    if (affectedStopPointStructures != null) {
+      AffectedRouteStructure affectedRouteStructure = new AffectedRouteStructure();
+      AffectedRouteStructure.StopPoints stopPoints =
+        new AffectedRouteStructure.StopPoints();
+      stopPoints
+        .getAffectedStopPointsAndLinkProjectionToNextStopPoints()
+        .addAll(affectedStopPointStructures);
+      affectedRouteStructure.setStopPoints(stopPoints);
+      affectedVehicleJourneyStructure.getRoutes().add(affectedRouteStructure);
+    }
+    return affectedVehicleJourneyStructure;
+  }
+
+  public static AffectsScopeStructure.Networks.AffectedNetwork createAffectedNetwork(
+    @Nonnull String lineRefString,
+    List<AffectedStopPointStructure> stopPointRefs
+  ) {
+    AffectsScopeStructure.Networks.AffectedNetwork affectedNetwork =
+      new AffectsScopeStructure.Networks.AffectedNetwork();
+    AffectedLineStructure affectedLineStructure = new AffectedLineStructure();
+    LineRef lineRef = new LineRef();
+    lineRef.setValue(lineRefString);
+    affectedLineStructure.setLineRef(lineRef);
+
+    if (stopPointRefs != null) {
+      AffectedLineStructure.StopPoints stopPoints =
+        new AffectedLineStructure.StopPoints();
+      stopPoints.getAffectedStopPoints().addAll(stopPointRefs);
+      affectedLineStructure.setStopPoints(stopPoints);
     }
 
-    public static RequestorRef createRequestorRef(String value) {
-        if(value == null) {
-            value = UUID.randomUUID().toString();
-        }
-        RequestorRef requestorRef = new RequestorRef();
-        requestorRef.setValue(value);
-        return requestorRef;
-    }
+    affectedNetwork.getAffectedLines().add(affectedLineStructure);
 
-    public static SituationNumber createSituationNumber(String value) {
-        SituationNumber situationNumber = new SituationNumber();
-        situationNumber.setValue(value);
-        return situationNumber;
-    }
+    return affectedNetwork;
+  }
 
-    public static SituationSourceStructure createSituationSourceStructure(String situationSourceType) {
-        var type = new SituationSourceStructure();
-        type.setSourceType(
-                SituationSourceTypeEnumeration.fromValue(situationSourceType)
-        );
-        return type;
-    }
-
-    public static HalfOpenTimestampOutputRangeStructure createValidityPeriod(@Nonnull String startTime, String endTime) {
-        var validityPeriod = new HalfOpenTimestampOutputRangeStructure();
-        validityPeriod.setStartTime(
-                DateMapper.mapISOStringToZonedDateTime(startTime)
-        );
-
-        if (endTime != null) {
-            validityPeriod.setEndTime(
-                    DateMapper.mapISOStringToZonedDateTime(endTime)
-            );
-        }
-
-        return validityPeriod;
-    }
-
-    public static DefaultedTextStructure createDefaultedTextStructure(String lang, String value) {
-        DefaultedTextStructure defaultedTextStructure = new DefaultedTextStructure();
-        defaultedTextStructure.setLang(lang);
-        defaultedTextStructure.setValue(value);
-        return defaultedTextStructure;
-    }
-
-    public static PtSituationElement.InfoLinks createInfoLinks(InfoLinkStructure infoLinkStructure) {
-        PtSituationElement.InfoLinks infoLinks = new PtSituationElement.InfoLinks();
-        infoLinks.getInfoLinks().add(infoLinkStructure);
-        return infoLinks;
-    }
-
-    public static InfoLinkStructure createInfoLinkStructure(@Nonnull String uri, String label) {
-        InfoLinkStructure infoLinkStructure = new InfoLinkStructure();
-        infoLinkStructure.setUri(uri);
-        if (label != null) {
-            NaturalLanguageStringStructure naturalLanguageStringStructure = new NaturalLanguageStringStructure();
-            naturalLanguageStringStructure.setValue(label);
-            infoLinkStructure.getLabels().add(
-                    naturalLanguageStringStructure
-            );
-        }
-        return infoLinkStructure;
-    }
-
-    public static AffectsScopeStructure createAffectsScopeStructure(
-            AffectsScopeStructure.Networks.AffectedNetwork affectedNetwork,
-            List<AffectedStopPointStructure> affectedStopPointStructures,
-            AffectedVehicleJourneyStructure affectedVehicleJourneyStructure
-    ) {
-        AffectsScopeStructure affectsScopeStructure = new AffectsScopeStructure();
-
-        if (affectedNetwork != null) {
-            AffectsScopeStructure.Networks networks = new AffectsScopeStructure.Networks();
-            networks.getAffectedNetworks().add(affectedNetwork);
-            affectsScopeStructure.setNetworks(networks);
-        }
-
-        if (affectedStopPointStructures != null) {
-            AffectsScopeStructure.StopPoints stopPoints = new AffectsScopeStructure.StopPoints();
-            stopPoints.getAffectedStopPoints().addAll(affectedStopPointStructures);
-            affectsScopeStructure.setStopPoints(stopPoints);
-        }
-
-        if (affectedVehicleJourneyStructure != null) {
-            AffectsScopeStructure.VehicleJourneys vehicleJourneys = new AffectsScopeStructure.VehicleJourneys();
-            vehicleJourneys.getAffectedVehicleJourneies().add(affectedVehicleJourneyStructure);
-            affectsScopeStructure.setVehicleJourneys(vehicleJourneys);
-        }
-
-        return affectsScopeStructure;
-    }
-
-    public static AffectedVehicleJourneyStructure createAffectedVehicleJourneyStructure(String dataFrameRef, String datedVehicleJourneyRef, List<AffectedStopPointStructure> affectedStopPointStructures) {
-        AffectedVehicleJourneyStructure affectedVehicleJourneyStructure = new AffectedVehicleJourneyStructure();
-        FramedVehicleJourneyRefStructure framedVehicleJourneyRefStructure = new FramedVehicleJourneyRefStructure();
-        DataFrameRefStructure dataFrameRefStructure = new DataFrameRefStructure();
-        dataFrameRefStructure.setValue(dataFrameRef);
-        framedVehicleJourneyRefStructure.setDataFrameRef(dataFrameRefStructure);
-        framedVehicleJourneyRefStructure.setDatedVehicleJourneyRef(datedVehicleJourneyRef);
-        affectedVehicleJourneyStructure.setFramedVehicleJourneyRef(framedVehicleJourneyRefStructure);
-
-        if (affectedStopPointStructures != null) {
-            AffectedRouteStructure affectedRouteStructure = new AffectedRouteStructure();
-            AffectedRouteStructure.StopPoints stopPoints = new AffectedRouteStructure.StopPoints();
-            stopPoints.getAffectedStopPointsAndLinkProjectionToNextStopPoints().addAll(
-                    affectedStopPointStructures
-            );
-            affectedRouteStructure.setStopPoints(stopPoints);
-            affectedVehicleJourneyStructure.getRoutes().add(affectedRouteStructure);
-        }
-        return affectedVehicleJourneyStructure;
-    }
-
-    public static AffectsScopeStructure.Networks.AffectedNetwork createAffectedNetwork(
-            @Nonnull String lineRefString,
-            List<AffectedStopPointStructure> stopPointRefs
-    ) {
-        AffectsScopeStructure.Networks.AffectedNetwork affectedNetwork = new AffectsScopeStructure.Networks.AffectedNetwork();
-        AffectedLineStructure affectedLineStructure = new AffectedLineStructure();
-        LineRef lineRef = new LineRef();
-        lineRef.setValue(lineRefString);
-        affectedLineStructure.setLineRef(lineRef);
-
-        if (stopPointRefs != null) {
-            AffectedLineStructure.StopPoints stopPoints = new AffectedLineStructure.StopPoints();
-            stopPoints.getAffectedStopPoints().addAll(stopPointRefs);
-            affectedLineStructure.setStopPoints(stopPoints);
-        }
-
-        affectedNetwork.getAffectedLines().add(affectedLineStructure);
-
-        return affectedNetwork;
-    }
-
-    public static AffectedStopPointStructure createAffectedStopPointStructure(String stopPointRefString) {
-        StopPointRefStructure stopPointRefStructure = new StopPointRefStructure();
-        stopPointRefStructure.setValue(stopPointRefString);
-        AffectedStopPointStructure affectedStopPointStructure = new AffectedStopPointStructure();
-        affectedStopPointStructure.setStopPointRef(stopPointRefStructure);
-        return affectedStopPointStructure;
-    }
+  public static AffectedStopPointStructure createAffectedStopPointStructure(
+    String stopPointRefString
+  ) {
+    StopPointRefStructure stopPointRefStructure = new StopPointRefStructure();
+    stopPointRefStructure.setValue(stopPointRefString);
+    AffectedStopPointStructure affectedStopPointStructure =
+      new AffectedStopPointStructure();
+    affectedStopPointStructure.setStopPointRef(stopPointRefStructure);
+    return affectedStopPointStructure;
+  }
 }

@@ -15,24 +15,20 @@
 
 package org.entur.enlil.siri.helpers;
 
-import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.annotation.Nonnull;
 
 public class DateMapper {
 
-    private DateMapper() {
-    }
+  private DateMapper() {}
 
-    public static ZonedDateTime mapISOStringToZonedDateTime(@Nonnull String date) {
-        return ZonedDateTime.of(
-                LocalDateTime.parse(
-                        date,
-                        DateTimeFormatter.ISO_DATE_TIME
-                ),
-                ZoneOffset.UTC
-        );
-    }
+  public static ZonedDateTime mapISOStringToZonedDateTime(@Nonnull String date) {
+    return ZonedDateTime.of(
+      LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME),
+      ZoneOffset.UTC
+    );
+  }
 }

@@ -15,6 +15,8 @@
 
 package org.entur.enlil.siri.service;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
 import org.entur.enlil.siri.repository.SituationElementRepository;
 import org.entur.enlil.siri.repository.firestore.FirestoreSituationElementRepository;
@@ -22,24 +24,26 @@ import org.springframework.stereotype.Service;
 import uk.org.siri.siri21.PtSituationElement;
 import uk.org.siri.siri21.Siri;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-
 @Service
 public class SituationExchangeDeliveryService {
-    private final SituationElementRepository situationElementRepository;
-    private final SiriObjectFactory siriObjectFactory;
 
-    public SituationExchangeDeliveryService(FirestoreSituationElementRepository situationElementRepository, SiriObjectFactory siriObjectFactory) {
-        this.situationElementRepository = situationElementRepository;
-        this.siriObjectFactory = siriObjectFactory;
-    }
+  private final SituationElementRepository situationElementRepository;
+  private final SiriObjectFactory siriObjectFactory;
 
-    public Siri getSituationExchangeDelivery() {
-        List<PtSituationElement> ptSituationElements = situationElementRepository.getAllMessages()
-                .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now()))
-                .toList();
+  public SituationExchangeDeliveryService(
+    FirestoreSituationElementRepository situationElementRepository,
+    SiriObjectFactory siriObjectFactory
+  ) {
+    this.situationElementRepository = situationElementRepository;
+    this.siriObjectFactory = siriObjectFactory;
+  }
 
-        return siriObjectFactory.createSXServiceDelivery(ptSituationElements);
-    }
+  public Siri getSituationExchangeDelivery() {
+    List<PtSituationElement> ptSituationElements = situationElementRepository
+      .getAllMessages()
+      .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now()))
+      .toList();
+
+    return siriObjectFactory.createSXServiceDelivery(ptSituationElements);
+  }
 }

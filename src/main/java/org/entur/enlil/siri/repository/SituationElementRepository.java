@@ -1,9 +1,8 @@
 package org.entur.enlil.siri.repository;
 
+import java.util.stream.Stream;
 import uk.org.siri.siri21.PtSituationElement;
 
-import java.util.stream.Stream;
-
 public interface SituationElementRepository {
-    Stream<PtSituationElement> getAllMessages();
+  Stream<PtSituationElement> getAllMessages();
 }

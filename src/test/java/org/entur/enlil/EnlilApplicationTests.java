@@ -18,28 +18,32 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 @ActiveProfiles("test")
 class EnlilApplicationTests {
-    @Container
-    private static final FirestoreEmulatorContainer firestoreEmulator =
-            new FirestoreEmulatorContainer(
-                    DockerImageName.parse("gcr.io/google.com/cloudsdktool/cloud-sdk:317.0.0-emulators"));
 
-    @DynamicPropertySource
-    static void emulatorProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.cloud.gcp.firestore.host-port", firestoreEmulator::getEmulatorEndpoint);
+  @Container
+  private static final FirestoreEmulatorContainer firestoreEmulator =
+    new FirestoreEmulatorContainer(
+      DockerImageName.parse("gcr.io/google.com/cloudsdktool/cloud-sdk:317.0.0-emulators")
+    );
+
+  @DynamicPropertySource
+  static void emulatorProperties(DynamicPropertyRegistry registry) {
+    registry.add(
+      "spring.cloud.gcp.firestore.host-port",
+      firestoreEmulator::getEmulatorEndpoint
+    );
+  }
+
+  @TestConfiguration
+  static class EmulatorConfiguration {
+
+    // By default, autoconfiguration will initialize application default credentials.
+    // For testing purposes, don't use any credentials. Bootstrap w/ NoCredentialsProvider.
+    @Bean
+    CredentialsProvider googleCredentials() {
+      return NoCredentialsProvider.create();
     }
+  }
 
-    @TestConfiguration
-    static class EmulatorConfiguration {
-        // By default, autoconfiguration will initialize application default credentials.
-        // For testing purposes, don't use any credentials. Bootstrap w/ NoCredentialsProvider.
-        @Bean
-        CredentialsProvider googleCredentials() {
-            return NoCredentialsProvider.create();
-        }
-    }
-
-    @Test
-    void contextLoads() {
-    }
-
+  @Test
+  void contextLoads() {}
 }
