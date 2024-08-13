@@ -25,7 +25,7 @@ common:
     volumes:
       - configMap:
           defaultMode: 420
-          name: uttu-application
+          name: enlil
         name: application-config
     probes:
       enabled: true
