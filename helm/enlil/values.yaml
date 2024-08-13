@@ -4,7 +4,7 @@ common:
   team: team-ror
   ingress:
     enabled: true
-    trafficType: public
+    trafficType: api
   service:
     internalPort: 8080
   deployment:

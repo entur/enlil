@@ -1,7 +1,4 @@
 common:
   env: tst
-  ingress:
-    host:
-      enlil.staging.entur.org
 configMap:
   firestoreProjectId: deviation-messages-staging
