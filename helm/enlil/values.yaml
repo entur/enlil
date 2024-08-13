@@ -25,7 +25,7 @@ common:
     volumes:
       - configMap:
           defaultMode: 420
-          name: enlil
+          name: enlil-application
         name: application-config
     probes:
       enabled: true
