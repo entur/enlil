@@ -13,23 +13,21 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>enlil</name>
     <description>enlil</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
+
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection>scm:git:ssh://git@github.com/entur/enlil.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/entur/enlil.git</developerConnection>
     </scm>
+
     <properties>
         <java.version>21</java.version>
-    </properties>
 
+        <spring-cloud-gcp-dependencies.version>5.5.0</spring-cloud-gcp-dependencies.version>
+        <testcontainers-bom.version>1.20.1</testcontainers-bom.version>
+        <jakarta-xml-bind-api.version>4.0.0</jakarta-xml-bind-api.version>
+        <jaxb-runtime.version>4.0.5</jaxb-runtime.version>
+        <siri-java-model.version>1.27</siri-java-model.version>
+    </properties>
 
     <distributionManagement>
         <snapshotRepository>
@@ -44,14 +42,14 @@
             <dependency>
                 <groupId>com.google.cloud</groupId>
                 <artifactId>spring-cloud-gcp-dependencies</artifactId>
-                <version>5.5.0</version>
+                <version>${spring-cloud-gcp-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
-                <version>1.20.1</version>
+                <version>${testcontainers-bom.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -72,13 +70,13 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
+            <version>${jakarta-xml-bind-api.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>4.0.5</version>
+            <version>${jaxb-runtime.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -95,7 +93,7 @@
         <dependency>
             <groupId>org.entur</groupId>
             <artifactId>siri-java-model</artifactId>
-            <version>1.27</version>
+            <version>${siri-java-model.version}</version>
         </dependency>
 
         <dependency>
