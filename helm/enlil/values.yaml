@@ -14,10 +14,19 @@ common:
     replicas: 1
   container:
     image: <+artifacts.primary.image>
-    cpu: 0.3
-    memory: 128
+    cpu: 1
+    memory: 2Gi
     prometheus:
       enabled: true
+    volumeMounts:
+      - mountPath: /etc/application-config
+        name: application-config
+        readOnly: true
+    volumes:
+      - configMap:
+          defaultMode: 420
+          name: uttu-application
+        name: application-config
     probes:
       enabled: true
       spec:
@@ -44,3 +53,10 @@ common:
           periodSeconds: 10
           timeoutSeconds: 10
           failureThreshold: 6
+  configmap:
+    data:
+      JDK_JAVA_OPTIONS: -server -Xmx2048m -Xss1024m -Dspring.config.location=/etc/application-config/application.properties
+        -Dfile.encoding=UTF-8
+      TZ: Europe/Oslo
+    enabled: true
+    toEnv: true
