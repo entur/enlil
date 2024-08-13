@@ -1,5 +1,7 @@
 common:
   env: prod
+  ingress:
+    host: enlil.entur.io
 configMap:
   firestoreProjectId: deviation-messages-prod
 
