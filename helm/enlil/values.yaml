@@ -19,13 +19,28 @@ common:
     prometheus:
       enabled: true
     probes:
-      liveness:
-        path: /actuator/health/liveness
-        port: 9001
-        periodSeconds: 10
-        failureThreshold: 3
-      readiness:
-        path: /actuator/health/readiness
-        port: 9001
-        periodSeconds: 10
-        failureThreshold: 3
+      enabled: true
+      spec:
+        startupProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 9001
+          periodSeconds: 1
+          timeoutSeconds: 5
+          failureThreshold: 20
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 9801
+          initialDelaySeconds: 0
+          periodSeconds: 60
+          timeoutSeconds: 30
+          failureThreshold: 5
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 9001
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 6
