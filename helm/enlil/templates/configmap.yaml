@@ -5,8 +5,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "labels" . |trim| nindent 4 }}
-  annotations:
-    {{- include "annotations" . |trim| nindent 4 }}
 data:
   application.properties: |-
     spring.cloud.gcp.firestore.enabled=true
