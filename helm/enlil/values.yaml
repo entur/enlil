@@ -8,9 +8,6 @@ common:
   service:
     internalPort: 8080
   deployment:
-    prometheus:
-      enabled: true
-      path: /actuator/prometheus
     replicas: 1
   container:
     image: <+artifacts.primary.image>
@@ -18,6 +15,8 @@ common:
     memory: 2000
     prometheus:
       enabled: true
+      path: /actuator/prometheus
+      port: 9001
     volumeMounts:
       - mountPath: /etc/application-config
         name: application-config
