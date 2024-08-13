@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import uk.org.siri.siri21.PtSituationElement;
 import uk.org.siri.siri21.Siri;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -36,7 +37,7 @@ public class SituationExchangeDeliveryService {
 
     public Siri getSituationExchangeDelivery() {
         List<PtSituationElement> ptSituationElements = situationElementRepository.getAllMessages()
-                //.filter() // TODO: filter open expired messages
+                .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now()))
                 .toList();
 
         return siriObjectFactory.createSXServiceDelivery(ptSituationElements);
