@@ -41,7 +41,7 @@ import uk.org.siri.siri21.Siri;
 )
 @Testcontainers
 @TestPropertySource("classpath:application-test.properties")
-class EnlilApplicationTests {
+class EnlilApplicationIntegrationTests {
 
   @LocalServerPort
   int randomPort;
@@ -82,7 +82,7 @@ class EnlilApplicationTests {
   }
 
   @Test
-  void contextLoads() {
+  void testSituationExchangeRequest() {
     TestRestTemplate restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(List.of(MediaType.APPLICATION_XML));
