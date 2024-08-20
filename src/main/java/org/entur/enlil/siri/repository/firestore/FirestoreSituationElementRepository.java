@@ -22,7 +22,7 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
     this.firestore = firestore;
   }
 
-  public Stream<PtSituationElement> getAllMessages() {
+  public Stream<PtSituationElement> getAllSituationElements() {
     return Stream
       .concat(getOpenMessages(), getClosedValidMessages())
       .map(EntityToSiriMapper::mapToPtSituationElement);

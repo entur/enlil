@@ -19,7 +19,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
 import org.entur.enlil.siri.repository.SituationElementRepository;
-import org.entur.enlil.siri.repository.firestore.FirestoreSituationElementRepository;
 import org.springframework.stereotype.Service;
 import uk.org.siri.siri21.PtSituationElement;
 import uk.org.siri.siri21.Siri;
@@ -31,7 +30,7 @@ public class SituationExchangeDeliveryService {
   private final SiriObjectFactory siriObjectFactory;
 
   public SituationExchangeDeliveryService(
-    FirestoreSituationElementRepository situationElementRepository,
+    SituationElementRepository situationElementRepository,
     SiriObjectFactory siriObjectFactory
   ) {
     this.situationElementRepository = situationElementRepository;
@@ -40,7 +39,7 @@ public class SituationExchangeDeliveryService {
 
   public Siri getSituationExchangeDelivery() {
     List<PtSituationElement> ptSituationElements = situationElementRepository
-      .getAllMessages()
+      .getAllSituationElements()
       .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now()))
       .toList();
 
