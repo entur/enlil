@@ -38,8 +38,8 @@ public class EstimatedVehicleJourneyEntityToSiriMapper {
       .ifPresent(framedVehicleJourneyRef ->
         estimatedVehicleJourney.setFramedVehicleJourneyRef(
           SiriObjectFactory.createFramedVehicleJourneyRefStructure(
-            framedVehicleJourneyRef.getDataFrameRef(),
-            framedVehicleJourneyRef.getDatedVehicleJourneyRef()
+            framedVehicleJourneyRef.getDatedVehicleJourneyRef(),
+            framedVehicleJourneyRef.getDataFrameRef()
           )
         )
       );
