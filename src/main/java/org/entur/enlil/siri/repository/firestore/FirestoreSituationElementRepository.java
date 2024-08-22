@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 import org.entur.enlil.siri.repository.SituationElementRepository;
 import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
-import org.entur.enlil.siri.repository.firestore.mapper.EntityToSiriMapper;
+import org.entur.enlil.siri.repository.firestore.mapper.SituationElementEntityToSiriMapper;
 import org.springframework.stereotype.Repository;
 import uk.org.siri.siri21.PtSituationElement;
 
@@ -25,7 +25,7 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
   public Stream<PtSituationElement> getAllSituationElements() {
     return Stream
       .concat(getOpenMessages(), getClosedValidMessages())
-      .map(EntityToSiriMapper::mapToPtSituationElement);
+      .map(SituationElementEntityToSiriMapper::mapToPtSituationElement);
   }
 
   private Stream<PtSituationElementEntity> getOpenMessages() {

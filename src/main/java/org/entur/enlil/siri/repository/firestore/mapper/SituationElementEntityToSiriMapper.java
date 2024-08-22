@@ -10,9 +10,9 @@ import uk.org.siri.siri21.ReportTypeEnumeration;
 import uk.org.siri.siri21.SeverityEnumeration;
 import uk.org.siri.siri21.WorkflowStatusEnumeration;
 
-public class EntityToSiriMapper {
+public class SituationElementEntityToSiriMapper {
 
-  private EntityToSiriMapper() {}
+  private SituationElementEntityToSiriMapper() {}
 
   public static PtSituationElement mapToPtSituationElement(PtSituationElementEntity dto) {
     PtSituationElement ptSituationElement = new PtSituationElement();

@@ -303,31 +303,6 @@ public class PtSituationElementEntity {
     }
   }
 
-  public static class FramedVehicleJourneyRef {
-
-    @PropertyName("DataFrameRef")
-    private String dataFrameRef;
-
-    @PropertyName("DatedVehicleJourneyRef")
-    private String datedVehicleJourneyRef;
-
-    public String getDataFrameRef() {
-      return dataFrameRef;
-    }
-
-    public void setDataFrameRef(String dataFrameRef) {
-      this.dataFrameRef = dataFrameRef;
-    }
-
-    public String getDatedVehicleJourneyRef() {
-      return datedVehicleJourneyRef;
-    }
-
-    public void setDatedVehicleJourneyRef(String datedVehicleJourneyRef) {
-      this.datedVehicleJourneyRef = datedVehicleJourneyRef;
-    }
-  }
-
   public static class Networks {
 
     @PropertyName("AffectedNetwork")

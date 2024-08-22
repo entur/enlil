@@ -30,6 +30,8 @@ import uk.org.siri.siri21.AffectedVehicleJourneyStructure;
 import uk.org.siri.siri21.AffectsScopeStructure;
 import uk.org.siri.siri21.DataFrameRefStructure;
 import uk.org.siri.siri21.DefaultedTextStructure;
+import uk.org.siri.siri21.DirectionRefStructure;
+import uk.org.siri.siri21.EstimatedCall;
 import uk.org.siri.siri21.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri21.EstimatedVehicleJourney;
 import uk.org.siri.siri21.EstimatedVersionFrameStructure;
@@ -172,11 +174,19 @@ public class SiriObjectFactory {
     infoLinkStructure.setUri(uri);
     if (label != null) {
       NaturalLanguageStringStructure naturalLanguageStringStructure =
-        new NaturalLanguageStringStructure();
-      naturalLanguageStringStructure.setValue(label);
+        createNaturalLanguageStringStructure(label);
       infoLinkStructure.getLabels().add(naturalLanguageStringStructure);
     }
     return infoLinkStructure;
+  }
+
+  public static NaturalLanguageStringStructure createNaturalLanguageStringStructure(
+    String text
+  ) {
+    NaturalLanguageStringStructure naturalLanguageStringStructure =
+      new NaturalLanguageStringStructure();
+    naturalLanguageStringStructure.setValue(text);
+    return naturalLanguageStringStructure;
   }
 
   public static AffectsScopeStructure createAffectsScopeStructure(
@@ -217,11 +227,7 @@ public class SiriObjectFactory {
     AffectedVehicleJourneyStructure affectedVehicleJourneyStructure =
       new AffectedVehicleJourneyStructure();
     FramedVehicleJourneyRefStructure framedVehicleJourneyRefStructure =
-      new FramedVehicleJourneyRefStructure();
-    DataFrameRefStructure dataFrameRefStructure = new DataFrameRefStructure();
-    dataFrameRefStructure.setValue(dataFrameRef);
-    framedVehicleJourneyRefStructure.setDataFrameRef(dataFrameRefStructure);
-    framedVehicleJourneyRefStructure.setDatedVehicleJourneyRef(datedVehicleJourneyRef);
+      createFramedVehicleJourneyRefStructure(datedVehicleJourneyRef, dataFrameRef);
     affectedVehicleJourneyStructure.setFramedVehicleJourneyRef(
       framedVehicleJourneyRefStructure
     );
@@ -237,6 +243,19 @@ public class SiriObjectFactory {
       affectedVehicleJourneyStructure.getRoutes().add(affectedRouteStructure);
     }
     return affectedVehicleJourneyStructure;
+  }
+
+  public static FramedVehicleJourneyRefStructure createFramedVehicleJourneyRefStructure(
+    String datedVehicleJourneyRef,
+    String dataFrameRef
+  ) {
+    FramedVehicleJourneyRefStructure framedVehicleJourneyRefStructure =
+      new FramedVehicleJourneyRefStructure();
+    DataFrameRefStructure dataFrameRefStructure = new DataFrameRefStructure();
+    dataFrameRefStructure.setValue(dataFrameRef);
+    framedVehicleJourneyRefStructure.setDataFrameRef(dataFrameRefStructure);
+    framedVehicleJourneyRefStructure.setDatedVehicleJourneyRef(datedVehicleJourneyRef);
+    return framedVehicleJourneyRefStructure;
   }
 
   public static AffectsScopeStructure.Networks.AffectedNetwork createAffectedNetwork(
@@ -265,11 +284,39 @@ public class SiriObjectFactory {
   public static AffectedStopPointStructure createAffectedStopPointStructure(
     String stopPointRefString
   ) {
-    StopPointRefStructure stopPointRefStructure = new StopPointRefStructure();
-    stopPointRefStructure.setValue(stopPointRefString);
+    StopPointRefStructure stopPointRefStructure = createStopPointRefStructure(
+      stopPointRefString
+    );
     AffectedStopPointStructure affectedStopPointStructure =
       new AffectedStopPointStructure();
     affectedStopPointStructure.setStopPointRef(stopPointRefStructure);
     return affectedStopPointStructure;
+  }
+
+  public static LineRef createLineRef(String lineRefString) {
+    LineRef lineRef = new LineRef();
+    lineRef.setValue(lineRefString);
+    return lineRef;
+  }
+
+  public static DirectionRefStructure createDirectionRefStructure(Integer directionRef) {
+    DirectionRefStructure directionRefStructure = new DirectionRefStructure();
+    directionRefStructure.setValue(directionRef.toString());
+    return directionRefStructure;
+  }
+
+  public static EstimatedVehicleJourney.EstimatedCalls createEstimatedCalls(
+    List<EstimatedCall> estimatedCallList
+  ) {
+    EstimatedVehicleJourney.EstimatedCalls estimatedCalls =
+      new EstimatedVehicleJourney.EstimatedCalls();
+    estimatedCalls.getEstimatedCalls().addAll(estimatedCallList);
+    return estimatedCalls;
+  }
+
+  public static StopPointRefStructure createStopPointRefStructure(String stopPointRef) {
+    StopPointRefStructure stopPointRefStructure = new StopPointRefStructure();
+    stopPointRefStructure.setValue(stopPointRef);
+    return stopPointRefStructure;
   }
 }
