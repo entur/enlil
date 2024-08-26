@@ -2,6 +2,7 @@ package org.entur.enlil.siri.repository.firestore;
 
 import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.Firestore;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -17,9 +18,11 @@ import uk.org.siri.siri21.PtSituationElement;
 public class FirestoreSituationElementRepository implements SituationElementRepository {
 
   private final Firestore firestore;
+  private final Clock clock;
 
-  public FirestoreSituationElementRepository(Firestore firestore) {
+  public FirestoreSituationElementRepository(Firestore firestore, Clock clock) {
     this.firestore = firestore;
+    this.clock = clock;
   }
 
   public Stream<PtSituationElement> getAllSituationElements() {
@@ -30,13 +33,15 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
 
   private Stream<PtSituationElementEntity> getOpenMessages() {
     try {
-      return firestore
+      Stream<PtSituationElementEntity> stream = firestore
         .collectionGroup("messages")
         .where(Filter.equalTo("Progress", "open"))
         .get()
         .get(5, TimeUnit.SECONDS)
         .toObjects(PtSituationElementEntity.class)
         .stream();
+
+      return stream;
     } catch (InterruptedException | TimeoutException | ExecutionException e) {
       throw new RuntimeException(e);
     }
@@ -47,7 +52,7 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
       return firestore
         .collectionGroup("messages")
         .where(Filter.equalTo("Progress", "closed"))
-        .where(Filter.greaterThan("ValidityPeriod.EndTime", Instant.now()))
+        .where(Filter.greaterThan("ValidityPeriod.EndTime", Instant.now(clock)))
         .get()
         .get(5, TimeUnit.SECONDS)
         .toObjects(PtSituationElementEntity.class)

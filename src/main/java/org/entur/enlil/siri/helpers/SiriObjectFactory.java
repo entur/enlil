@@ -15,6 +15,7 @@
 
 package org.entur.enlil.siri.helpers;
 
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -36,12 +37,15 @@ import uk.org.siri.siri21.EstimatedTimetableDeliveryStructure;
 import uk.org.siri.siri21.EstimatedVehicleJourney;
 import uk.org.siri.siri21.EstimatedVersionFrameStructure;
 import uk.org.siri.siri21.FramedVehicleJourneyRefStructure;
+import uk.org.siri.siri21.GroupOfLinesRefStructure;
 import uk.org.siri.siri21.HalfOpenTimestampOutputRangeStructure;
 import uk.org.siri.siri21.InfoLinkStructure;
 import uk.org.siri.siri21.LineRef;
 import uk.org.siri.siri21.NaturalLanguageStringStructure;
+import uk.org.siri.siri21.OperatorRefStructure;
 import uk.org.siri.siri21.PtSituationElement;
 import uk.org.siri.siri21.RequestorRef;
+import uk.org.siri.siri21.RouteRefStructure;
 import uk.org.siri.siri21.ServiceDelivery;
 import uk.org.siri.siri21.Siri;
 import uk.org.siri.siri21.SituationExchangeDeliveryStructure;
@@ -56,9 +60,11 @@ public class SiriObjectFactory {
   public static final String FALLBACK_SIRI_VERSION = "2.1";
 
   private final EnlilConfiguration configuration;
+  private final Clock clock;
 
-  public SiriObjectFactory(@Autowired EnlilConfiguration enlilConfiguration) {
+  public SiriObjectFactory(EnlilConfiguration enlilConfiguration, Clock clock) {
     this.configuration = enlilConfiguration;
+    this.clock = clock;
   }
 
   public Siri createSXServiceDelivery(Collection<PtSituationElement> elements) {
@@ -70,7 +76,7 @@ public class SiriObjectFactory {
       new SituationExchangeDeliveryStructure.Situations();
     situations.getPtSituationElements().addAll(elements);
     deliveryStructure.setSituations(situations);
-    deliveryStructure.setResponseTimestamp(ZonedDateTime.now());
+    deliveryStructure.setResponseTimestamp(ZonedDateTime.now(clock));
     delivery.getSituationExchangeDeliveries().add(deliveryStructure);
     siri.setServiceDelivery(delivery);
     return siri;
@@ -84,12 +90,12 @@ public class SiriObjectFactory {
     deliveryStructure.setVersion(FALLBACK_SIRI_VERSION);
     EstimatedVersionFrameStructure estimatedVersionFrameStructure =
       new EstimatedVersionFrameStructure();
-    estimatedVersionFrameStructure.setRecordedAtTime(ZonedDateTime.now());
+    estimatedVersionFrameStructure.setRecordedAtTime(ZonedDateTime.now(clock));
     estimatedVersionFrameStructure.getEstimatedVehicleJourneies().addAll(elements);
     deliveryStructure
       .getEstimatedJourneyVersionFrames()
       .add(estimatedVersionFrameStructure);
-    deliveryStructure.setResponseTimestamp(ZonedDateTime.now());
+    deliveryStructure.setResponseTimestamp(ZonedDateTime.now(clock));
 
     delivery.getEstimatedTimetableDeliveries().add(deliveryStructure);
     siri.setServiceDelivery(delivery);
@@ -98,7 +104,7 @@ public class SiriObjectFactory {
 
   private ServiceDelivery createServiceDelivery() {
     ServiceDelivery delivery = new ServiceDelivery();
-    delivery.setResponseTimestamp(ZonedDateTime.now());
+    delivery.setResponseTimestamp(ZonedDateTime.now(clock));
     if (configuration != null && configuration.getProducerRef() != null) {
       delivery.setProducerRef(createRequestorRef(configuration.getProducerRef()));
     }
@@ -299,9 +305,9 @@ public class SiriObjectFactory {
     return lineRef;
   }
 
-  public static DirectionRefStructure createDirectionRefStructure(Integer directionRef) {
+  public static DirectionRefStructure createDirectionRefStructure(String directionRef) {
     DirectionRefStructure directionRefStructure = new DirectionRefStructure();
-    directionRefStructure.setValue(directionRef.toString());
+    directionRefStructure.setValue(directionRef);
     return directionRefStructure;
   }
 
@@ -318,5 +324,25 @@ public class SiriObjectFactory {
     StopPointRefStructure stopPointRefStructure = new StopPointRefStructure();
     stopPointRefStructure.setValue(stopPointRef);
     return stopPointRefStructure;
+  }
+
+  public static RouteRefStructure createRouteRefStructure(String routeRef) {
+    RouteRefStructure routeRefStructure = new RouteRefStructure();
+    routeRefStructure.setValue(routeRef);
+    return routeRefStructure;
+  }
+
+  public static GroupOfLinesRefStructure createGroupOfLinesRefStructure(
+    String groupOfLinesRef
+  ) {
+    GroupOfLinesRefStructure groupOfLinesRefStructure = new GroupOfLinesRefStructure();
+    groupOfLinesRefStructure.setValue(groupOfLinesRef);
+    return groupOfLinesRefStructure;
+  }
+
+  public static OperatorRefStructure createOperatorRefStructure(String operatorRef) {
+    OperatorRefStructure operatorRefStructure = new OperatorRefStructure();
+    operatorRefStructure.setValue(operatorRef);
+    return operatorRefStructure;
   }
 }

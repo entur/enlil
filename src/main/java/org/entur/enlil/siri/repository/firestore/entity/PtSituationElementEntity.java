@@ -5,158 +5,160 @@ import java.util.List;
 
 public class PtSituationElementEntity {
 
-  @PropertyName("CreationTime")
   private String creationTime;
-
-  @PropertyName("ParticipantRef")
   private String participantRef;
-
-  @PropertyName("SituationNumber")
   private String situationNumber;
-
-  @PropertyName("Source")
   private Source source;
-
-  @PropertyName("Progress")
   private String progress;
-
-  @PropertyName("ValidityPeriod")
   private ValidityPeriod validityPeriod;
-
-  @PropertyName("Severity")
   private String severity;
-
-  @PropertyName("ReportType")
   private String reportType;
-
-  @PropertyName("Summary")
   private Text summary;
-
-  @PropertyName("Description")
   private Text description;
-
-  @PropertyName("Advice")
   private Text advice;
-
-  @PropertyName("Affects")
   private Affects affects;
-
-  @PropertyName("InfoLinks")
   private InfoLinks infoLinks;
 
+  @PropertyName("CreationTime")
   public String getCreationTime() {
     return creationTime;
   }
 
+  @PropertyName("CreationTime")
   public void setCreationTime(String creationTime) {
     this.creationTime = creationTime;
   }
 
+  @PropertyName("ParticipantRef")
   public String getParticipantRef() {
     return participantRef;
   }
 
+  @PropertyName("ParticipantRef")
   public void setParticipantRef(String participantRef) {
     this.participantRef = participantRef;
   }
 
+  @PropertyName("SituationNumber")
   public String getSituationNumber() {
     return situationNumber;
   }
 
+  @PropertyName("SituationNumber")
   public void setSituationNumber(String situationNumber) {
     this.situationNumber = situationNumber;
   }
 
+  @PropertyName("Source")
   public Source getSource() {
     return source;
   }
 
+  @PropertyName("Source")
   public void setSource(Source source) {
     this.source = source;
   }
 
+  @PropertyName("Progress")
   public String getProgress() {
     return progress;
   }
 
+  @PropertyName("Progress")
   public void setProgress(String progress) {
     this.progress = progress;
   }
 
+  @PropertyName("ValidityPeriod")
   public ValidityPeriod getValidityPeriod() {
     return validityPeriod;
   }
 
+  @PropertyName("ValidityPeriod")
   public void setValidityPeriod(ValidityPeriod validityPeriod) {
     this.validityPeriod = validityPeriod;
   }
 
+  @PropertyName("Severity")
   public String getSeverity() {
     return severity;
   }
 
+  @PropertyName("Severity")
   public void setSeverity(String severity) {
     this.severity = severity;
   }
 
+  @PropertyName("ReportType")
   public String getReportType() {
     return reportType;
   }
 
+  @PropertyName("ReportType")
   public void setReportType(String reportType) {
     this.reportType = reportType;
   }
 
+  @PropertyName("Summary")
   public Text getSummary() {
     return summary;
   }
 
+  @PropertyName("Summary")
   public void setSummary(Text summary) {
     this.summary = summary;
   }
 
+  @PropertyName("Description")
   public Text getDescription() {
     return description;
   }
 
+  @PropertyName("Description")
   public void setDescription(Text description) {
     this.description = description;
   }
 
+  @PropertyName("Advice")
   public Text getAdvice() {
     return advice;
   }
 
+  @PropertyName("Advice")
   public void setAdvice(Text advice) {
     this.advice = advice;
   }
 
+  @PropertyName("Affects")
   public Affects getAffects() {
     return affects;
   }
 
+  @PropertyName("Affects")
   public void setAffects(Affects affects) {
     this.affects = affects;
   }
 
+  @PropertyName("InfoLinks")
   public InfoLinks getInfoLinks() {
     return infoLinks;
   }
 
+  @PropertyName("InfoLinks")
   public void setInfoLinks(InfoLinks infoLinks) {
     this.infoLinks = infoLinks;
   }
 
   public static class Source {
 
-    @PropertyName("SourceType")
     private String sourceType;
 
+    @PropertyName("SourceType")
     public String getSourceType() {
       return sourceType;
     }
 
+    @PropertyName("SourceType")
     public void setSourceType(String sourceType) {
       this.sourceType = sourceType;
     }
@@ -164,24 +166,25 @@ public class PtSituationElementEntity {
 
   public static class ValidityPeriod {
 
-    @PropertyName("StartTime")
     private String startTime;
-
-    @PropertyName("EndTime")
     private String endTime;
 
+    @PropertyName("StartTime")
     public String getStartTime() {
       return startTime;
     }
 
+    @PropertyName("StartTime")
     public void setStartTime(String startTime) {
       this.startTime = startTime;
     }
 
+    @PropertyName("EndTime")
     public String getEndTime() {
       return endTime;
     }
 
+    @PropertyName("EndTime")
     public void setEndTime(String endTime) {
       this.endTime = endTime;
     }
@@ -189,24 +192,25 @@ public class PtSituationElementEntity {
 
   public static class Text {
 
+    private Attributes attributes;
+    private String text;
+
     @PropertyName("_attributes")
-    public Attributes attributes;
-
-    @PropertyName("_text")
-    public String text;
-
     public Attributes getAttributes() {
       return attributes;
     }
 
+    @PropertyName("_attributes")
     public void setAttributes(Attributes attributes) {
       this.attributes = attributes;
     }
 
+    @PropertyName("_text")
     public String getText() {
       return text;
     }
 
+    @PropertyName("_text")
     public void setText(String text) {
       this.text = text;
     }
@@ -214,13 +218,14 @@ public class PtSituationElementEntity {
 
   public static class Attributes {
 
-    @PropertyName("xml:lang")
-    public String xmlLang;
+    private String xmlLang;
 
+    @PropertyName("xml:lang")
     public String getXmlLang() {
       return xmlLang;
     }
 
+    @PropertyName("xml:lang")
     public void setXmlLang(String xmlLang) {
       this.xmlLang = xmlLang;
     }
@@ -228,35 +233,36 @@ public class PtSituationElementEntity {
 
   public static class Affects {
 
-    @PropertyName("Networks")
     private Networks networks;
-
-    @PropertyName("StopPoints")
     private StopPoints stopPoints;
-
-    @PropertyName("VehicleJourneys")
     private VehicleJourneys vehicleJourneys;
 
+    @PropertyName("Networks")
     public Networks getNetworks() {
       return networks;
     }
 
+    @PropertyName("Networks")
     public void setNetworks(Networks networks) {
       this.networks = networks;
     }
 
+    @PropertyName("StopPoints")
     public StopPoints getStopPoints() {
       return stopPoints;
     }
 
+    @PropertyName("StopPoints")
     public void setStopPoints(StopPoints stopPoints) {
       this.stopPoints = stopPoints;
     }
 
+    @PropertyName("VehicleJourneys")
     public VehicleJourneys getVehicleJourneys() {
       return vehicleJourneys;
     }
 
+    @PropertyName("VehicleJourneys")
     public void setVehicleJourneys(VehicleJourneys vehicleJourneys) {
       this.vehicleJourneys = vehicleJourneys;
     }
@@ -264,13 +270,14 @@ public class PtSituationElementEntity {
 
   public static class VehicleJourneys {
 
-    @PropertyName("AffectedVehicleJourney")
     private AffectedVehicleJourney affectedVehicleJourney;
 
+    @PropertyName("AffectedVehicleJourney")
     public AffectedVehicleJourney getAffectedVehicleJourney() {
       return affectedVehicleJourney;
     }
 
+    @PropertyName("AffectedVehicleJourney")
     public void setAffectedVehicleJourney(AffectedVehicleJourney affectedVehicleJourney) {
       this.affectedVehicleJourney = affectedVehicleJourney;
     }
@@ -278,26 +285,27 @@ public class PtSituationElementEntity {
 
   public static class AffectedVehicleJourney {
 
-    @PropertyName("FramedVehicleJourneyRef")
     private FramedVehicleJourneyRef framedVehicleJourneyRef;
-
-    @PropertyName("Route")
     private Route route;
 
+    @PropertyName("FramedVehicleJourneyRef")
     public FramedVehicleJourneyRef getFramedVehicleJourneyRef() {
       return framedVehicleJourneyRef;
     }
 
+    @PropertyName("FramedVehicleJourneyRef")
     public void setFramedVehicleJourneyRef(
       FramedVehicleJourneyRef framedVehicleJourneyRef
     ) {
       this.framedVehicleJourneyRef = framedVehicleJourneyRef;
     }
 
+    @PropertyName("Route")
     public Route getRoute() {
       return route;
     }
 
+    @PropertyName("Route")
     public void setRoute(Route route) {
       this.route = route;
     }
@@ -305,13 +313,14 @@ public class PtSituationElementEntity {
 
   public static class Networks {
 
-    @PropertyName("AffectedNetwork")
     private AffectedNetwork affectedNetwork;
 
+    @PropertyName("AffectedNetwork")
     public AffectedNetwork getAffectedNetwork() {
       return affectedNetwork;
     }
 
+    @PropertyName("AffectedNetwork")
     public void setAffectedNetwork(AffectedNetwork affectedNetwork) {
       this.affectedNetwork = affectedNetwork;
     }
@@ -319,13 +328,14 @@ public class PtSituationElementEntity {
 
   public static class AffectedNetwork {
 
-    @PropertyName("AffectedLine")
     private AffectedLine affectedLine;
 
+    @PropertyName("AffectedLine")
     public AffectedLine getAffectedLine() {
       return affectedLine;
     }
 
+    @PropertyName("AffectedLine")
     public void setAffectedLine(AffectedLine affectedLine) {
       this.affectedLine = affectedLine;
     }
@@ -333,24 +343,25 @@ public class PtSituationElementEntity {
 
   public static class AffectedLine {
 
-    @PropertyName("LineRef")
     private String lineRef;
-
-    @PropertyName("Routes")
     private Routes routes;
 
+    @PropertyName("LineRef")
     public String getLineRef() {
       return lineRef;
     }
 
+    @PropertyName("LineRef")
     public void setLineRef(String lineRef) {
       this.lineRef = lineRef;
     }
 
+    @PropertyName("Routes")
     public Routes getRoutes() {
       return routes;
     }
 
+    @PropertyName("Routes")
     public void setRoutes(Routes routes) {
       this.routes = routes;
     }
@@ -358,13 +369,14 @@ public class PtSituationElementEntity {
 
   public static class Routes {
 
-    @PropertyName("AffectedRoute")
     private Route affectedRoute;
 
+    @PropertyName("AffectedRoute")
     public Route getAffectedRoute() {
       return affectedRoute;
     }
 
+    @PropertyName("AffectedRoute")
     public void setAffectedRoute(Route affectedRoute) {
       this.affectedRoute = affectedRoute;
     }
@@ -372,13 +384,14 @@ public class PtSituationElementEntity {
 
   public static class Route {
 
-    @PropertyName("StopPoints")
     private StopPoints stopPoints;
 
+    @PropertyName("StopPoints")
     public StopPoints getStopPoints() {
       return stopPoints;
     }
 
+    @PropertyName("StopPoints")
     public void setStopPoints(StopPoints stopPoints) {
       this.stopPoints = stopPoints;
     }
@@ -386,13 +399,14 @@ public class PtSituationElementEntity {
 
   public static class StopPoints {
 
-    @PropertyName("AffectedStopPoint")
     private List<AffectedStopPoint> affectedStopPoint;
 
+    @PropertyName("AffectedStopPoint")
     public List<AffectedStopPoint> getAffectedStopPoint() {
       return affectedStopPoint;
     }
 
+    @PropertyName("AffectedStopPoint")
     public void setAffectedStopPoint(List<AffectedStopPoint> affectedStopPoint) {
       this.affectedStopPoint = affectedStopPoint;
     }
@@ -400,13 +414,14 @@ public class PtSituationElementEntity {
 
   public static class AffectedStopPoint {
 
-    @PropertyName("StopPointRef")
     private String stopPointRef;
 
+    @PropertyName("StopPointRef")
     public String getStopPointRef() {
       return stopPointRef;
     }
 
+    @PropertyName("StopPointRef")
     public void setStopPointRef(String stopPointRef) {
       this.stopPointRef = stopPointRef;
     }
@@ -414,13 +429,14 @@ public class PtSituationElementEntity {
 
   public static class InfoLinks {
 
-    @PropertyName("InfoLink")
     private InfoLink infoLink;
 
+    @PropertyName("InfoLink")
     public InfoLink getInfoLink() {
       return infoLink;
     }
 
+    @PropertyName("InfoLink")
     public void setInfoLink(InfoLink infoLink) {
       this.infoLink = infoLink;
     }
@@ -428,24 +444,25 @@ public class PtSituationElementEntity {
 
   public static class InfoLink {
 
-    @PropertyName("Uri")
     private String uri;
-
-    @PropertyName("Label")
     private String label;
 
+    @PropertyName("Uri")
     public String getUri() {
       return uri;
     }
 
+    @PropertyName("Uri")
     public void setUri(String uri) {
       this.uri = uri;
     }
 
+    @PropertyName("Label")
     public String getLabel() {
       return label;
     }
 
+    @PropertyName("Label")
     public void setLabel(String label) {
       this.label = label;
     }

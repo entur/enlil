@@ -30,6 +30,7 @@
         <prettier-java.version>2.1.0</prettier-java.version>
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
+        <java-snapshot-testing.version>4.0.8</java-snapshot-testing.version>
     </properties>
 
     <distributionManagement>
@@ -145,6 +146,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>io.github.origin-energy</groupId>
+            <artifactId>java-snapshot-testing-junit5</artifactId>
+            <version>${java-snapshot-testing.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -15,6 +15,7 @@
 
 package org.entur.enlil.siri.service;
 
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
@@ -28,19 +29,22 @@ public class SituationExchangeDeliveryService {
 
   private final SituationElementRepository situationElementRepository;
   private final SiriObjectFactory siriObjectFactory;
+  private final Clock clock;
 
   public SituationExchangeDeliveryService(
     SituationElementRepository situationElementRepository,
-    SiriObjectFactory siriObjectFactory
+    SiriObjectFactory siriObjectFactory,
+    Clock clock
   ) {
     this.situationElementRepository = situationElementRepository;
     this.siriObjectFactory = siriObjectFactory;
+    this.clock = clock;
   }
 
   public Siri getSituationExchangeDelivery() {
     List<PtSituationElement> ptSituationElements = situationElementRepository
       .getAllSituationElements()
-      .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now()))
+      .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now(clock)))
       .toList();
 
     return siriObjectFactory.createSXServiceDelivery(ptSituationElements);

@@ -1,12 +1,14 @@
 package org.entur.enlil;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE;
 
+import au.com.origin.snapshots.Expect;
+import au.com.origin.snapshots.junit5.SnapshotExtension;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.firestore.Firestore;
 import java.net.URI;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,10 +17,11 @@ import java.util.concurrent.ExecutionException;
 import org.entur.enlil.siri.repository.firestore.entity.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.siri.repository.firestore.entity.FramedVehicleJourneyRef;
 import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
+import org.entur.enlil.stubs.MockedClockConfiguration;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -30,11 +33,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.FirestoreEmulatorContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -44,10 +47,12 @@ import uk.org.siri.siri21.Siri;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = EnlilApplication.class
+  classes = { EnlilApplication.class, MockedClockConfiguration.class }
 )
 @Testcontainers
 @TestPropertySource("classpath:application-test.properties")
+@ExtendWith({ SnapshotExtension.class, MockitoExtension.class })
+@ActiveProfiles({ "test" })
 class EnlilApplicationIntegrationTests {
 
   @LocalServerPort
@@ -55,6 +60,11 @@ class EnlilApplicationIntegrationTests {
 
   @Autowired
   Firestore firestore;
+
+  @Autowired
+  Clock clock;
+
+  private Expect expect;
 
   @Container
   private static final FirestoreEmulatorContainer firestoreEmulator =
@@ -82,10 +92,11 @@ class EnlilApplicationIntegrationTests {
   }
 
   @Test
-  void testSituationExchangeRequest() {
+  void testSituationExchangeRequest() throws ExecutionException, InterruptedException {
     firestore
       .collection("codespaces/TST/authorities/TST:Authority:TST/messages")
-      .add(createTestMessage());
+      .add(createTestMessage())
+      .get();
 
     TestRestTemplate restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
@@ -93,48 +104,61 @@ class EnlilApplicationIntegrationTests {
     headers.setContentType(MediaType.APPLICATION_XML);
     RequestEntity<String> requestEntity = new RequestEntity<>(
       """
-                    <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                    <Siri version="2.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns:ns3="http://www.ifopt.org.uk/ifopt" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0">
-                      <ServiceRequest>
-                        <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
-                        <RequestorRef>ENTUR_DEV-1</RequestorRef>
-                        <SituationExchangeRequest version="2.0">
+                      <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+                      <Siri version="2.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns:ns3="http://www.ifopt.org.uk/ifopt" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0">
+                        <ServiceRequest>
                           <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
-                          <MessageIdentifier>e11d9efb-ee7b-4a67-847a-a254e813f0da</MessageIdentifier>
-                        </SituationExchangeRequest>
-                      </ServiceRequest>
-                    </Siri>
-                    """,
+                          <RequestorRef>ENTUR_DEV-1</RequestorRef>
+                          <SituationExchangeRequest version="2.0">
+                            <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
+                            <MessageIdentifier>e11d9efb-ee7b-4a67-847a-a254e813f0da</MessageIdentifier>
+                          </SituationExchangeRequest>
+                        </ServiceRequest>
+                      </Siri>
+                      """,
       headers,
       HttpMethod.POST,
       URI.create("http://localhost:" + randomPort + "/siri"),
       Siri.class
     );
 
-    ResponseEntity<Siri> response = restTemplate.exchange(requestEntity, Siri.class);
+    ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
-    Assertions.assertEquals(
-      "ENT",
-      response.getBody().getServiceDelivery().getProducerRef().getValue()
-    );
-    Assertions.assertEquals(
-      1,
-      response.getBody().getServiceDelivery().getSituationExchangeDeliveries().size()
-    );
+    expect.toMatchSnapshot(response.getBody());
   }
 
   PtSituationElementEntity createTestMessage() {
     var message = new PtSituationElementEntity();
-    message.setCreationTime(ISO_OFFSET_DATE.format(OffsetDateTime.now()));
+    message.setCreationTime("2023-09-19T14:45:00+01:00");
     message.setParticipantRef("TST");
     message.setSituationNumber("TST:SituationNumber:1");
     PtSituationElementEntity.Source source = new PtSituationElementEntity.Source();
     source.setSourceType("directReport");
     message.setSource(source);
     message.setProgress("open");
+    message.setSeverity("normal");
+    message.setReportType("general");
+    PtSituationElementEntity.Text summary = new PtSituationElementEntity.Text();
+    summary.setText("we have a situation here");
+    PtSituationElementEntity.Attributes attributes =
+      new PtSituationElementEntity.Attributes();
+    attributes.setXmlLang("no");
+    summary.setAttributes(attributes);
+    message.setSummary(summary);
+    PtSituationElementEntity.Affects affects = new PtSituationElementEntity.Affects();
+    PtSituationElementEntity.Networks networks = new PtSituationElementEntity.Networks();
+    PtSituationElementEntity.AffectedNetwork affectedNetwork =
+      new PtSituationElementEntity.AffectedNetwork();
+    PtSituationElementEntity.AffectedLine affectedLine =
+      new PtSituationElementEntity.AffectedLine();
+    affectedLine.setLineRef("TST:Line:1");
+    affectedNetwork.setAffectedLine(affectedLine);
+    networks.setAffectedNetwork(affectedNetwork);
+    affects.setNetworks(networks);
+    message.setAffects(affects);
     PtSituationElementEntity.ValidityPeriod validityPeriod =
       new PtSituationElementEntity.ValidityPeriod();
-    validityPeriod.setStartTime(ISO_OFFSET_DATE.format(OffsetDateTime.now()));
+    validityPeriod.setStartTime("2023-09-19T14:45:00+01:00");
     message.setValidityPeriod(validityPeriod);
     return message;
   }
@@ -171,64 +195,20 @@ class EnlilApplicationIntegrationTests {
       Siri.class
     );
 
-    ResponseEntity<Siri> response = restTemplate.exchange(requestEntity, Siri.class);
+    ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
-    Assertions.assertEquals(
-      "ENT",
-      response.getBody().getServiceDelivery().getProducerRef().getValue()
-    );
-    Assertions.assertEquals(
-      1,
-      response.getBody().getServiceDelivery().getEstimatedTimetableDeliveries().size()
-    );
-
-    Assertions.assertEquals(
-      1,
-      response
-        .getBody()
-        .getServiceDelivery()
-        .getEstimatedTimetableDeliveries()
-        .getFirst()
-        .getEstimatedJourneyVersionFrames()
-        .size()
-    );
-
-    Assertions.assertEquals(
-      1,
-      response
-        .getBody()
-        .getServiceDelivery()
-        .getEstimatedTimetableDeliveries()
-        .getFirst()
-        .getEstimatedJourneyVersionFrames()
-        .getFirst()
-        .getEstimatedVehicleJourneies()
-        .size()
-    );
-    Assertions.assertEquals(
-      2,
-      response
-        .getBody()
-        .getServiceDelivery()
-        .getEstimatedTimetableDeliveries()
-        .getFirst()
-        .getEstimatedJourneyVersionFrames()
-        .getFirst()
-        .getEstimatedVehicleJourneies()
-        .getFirst()
-        .getEstimatedCalls()
-        .getEstimatedCalls()
-        .size()
-    );
+    expect.toMatchSnapshot(response.getBody());
   }
 
   private EstimatedVehicleJourneyEntity createTestCancellation() {
     var cancellation = new EstimatedVehicleJourneyEntity();
     var estimatedVehicleJourney =
       new EstimatedVehicleJourneyEntity.EstimatedVehicleJourney();
-    estimatedVehicleJourney.setRecordedAtTime(ISO_DATE_TIME.format(OffsetDateTime.now()));
+    estimatedVehicleJourney.setRecordedAtTime(
+      ISO_DATE_TIME.format(OffsetDateTime.now(clock))
+    );
     estimatedVehicleJourney.setLineRef("TST:Line:1");
-    estimatedVehicleJourney.setDirectionRef(0);
+    estimatedVehicleJourney.setDirectionRef("0");
     FramedVehicleJourneyRef framedVehicleJourneyRef = new FramedVehicleJourneyRef();
     framedVehicleJourneyRef.setDataFrameRef("TST:ServiceJourney:1");
     framedVehicleJourneyRef.setDatedVehicleJourneyRef("2024-01-01");
@@ -238,7 +218,7 @@ class EnlilApplicationIntegrationTests {
     estimatedVehicleJourney.setEstimatedCalls(createTestEstimatedCalls());
     estimatedVehicleJourney.setIsCompleteStopSequence(true);
     estimatedVehicleJourney.expiresAtEpochMs =
-      (Instant.now().plus(20, ChronoUnit.MINUTES).toEpochMilli());
+      (Instant.now(clock).plus(20, ChronoUnit.MINUTES).toEpochMilli());
 
     cancellation.EstimatedVehicleJourney = estimatedVehicleJourney;
 

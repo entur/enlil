@@ -17,13 +17,40 @@ public class EstimatedVehicleJourneyEntity {
     private String lineRef;
 
     @PropertyName("DirectionRef")
-    private Integer directionRef;
+    private String directionRef;
 
     @PropertyName("FramedVehicleJourneyRef")
     private FramedVehicleJourneyRef framedVehicleJourneyRef;
 
     @PropertyName("Cancellation")
     private Boolean cancellation;
+
+    @PropertyName("EstimatedVehicleJourneyCode")
+    private String estimatedVehicleJourneyCode;
+
+    @PropertyName("ExtraJourney")
+    private Boolean extraJourney;
+
+    @PropertyName("VehicleMode")
+    private String vehicleMode;
+
+    @PropertyName("RouteRef")
+    private String routeRef;
+
+    @PropertyName("PublishedLineName")
+    private String publishedLineName;
+
+    @PropertyName("GroupOfLinesRef")
+    private String groupOfLinesRef;
+
+    @PropertyName("ExternalLineRef")
+    private String externalLineRef;
+
+    @PropertyName("OperatorRef")
+    private String operatorRef;
+
+    @PropertyName("Monitored")
+    private Boolean monitored;
 
     @PropertyName("DataSource")
     private String dataSource;
@@ -53,11 +80,11 @@ public class EstimatedVehicleJourneyEntity {
       this.lineRef = lineRef;
     }
 
-    public Integer getDirectionRef() {
+    public String getDirectionRef() {
       return directionRef;
     }
 
-    public void setDirectionRef(Integer directionRef) {
+    public void setDirectionRef(String directionRef) {
       this.directionRef = directionRef;
     }
 
@@ -77,6 +104,78 @@ public class EstimatedVehicleJourneyEntity {
 
     public void setCancellation(Boolean cancellation) {
       this.cancellation = cancellation;
+    }
+
+    public String getEstimatedVehicleJourneyCode() {
+      return estimatedVehicleJourneyCode;
+    }
+
+    public void setEstimatedVehicleJourneyCode(String estimatedVehicleJourneyCode) {
+      this.estimatedVehicleJourneyCode = estimatedVehicleJourneyCode;
+    }
+
+    public Boolean getExtraJourney() {
+      return extraJourney;
+    }
+
+    public void setExtraJourney(Boolean extraJourney) {
+      this.extraJourney = extraJourney;
+    }
+
+    public String getVehicleMode() {
+      return vehicleMode;
+    }
+
+    public void setVehicleMode(String vehicleMode) {
+      this.vehicleMode = vehicleMode;
+    }
+
+    public String getRouteRef() {
+      return routeRef;
+    }
+
+    public void setRouteRef(String routeRef) {
+      this.routeRef = routeRef;
+    }
+
+    public String getPublishedLineName() {
+      return publishedLineName;
+    }
+
+    public void setPublishedLineName(String publishedLineName) {
+      this.publishedLineName = publishedLineName;
+    }
+
+    public String getGroupOfLinesRef() {
+      return groupOfLinesRef;
+    }
+
+    public void setGroupOfLinesRef(String groupOfLinesRef) {
+      this.groupOfLinesRef = groupOfLinesRef;
+    }
+
+    public String getExternalLineRef() {
+      return externalLineRef;
+    }
+
+    public void setExternalLineRef(String externalLineRef) {
+      this.externalLineRef = externalLineRef;
+    }
+
+    public String getOperatorRef() {
+      return operatorRef;
+    }
+
+    public void setOperatorRef(String operatorRef) {
+      this.operatorRef = operatorRef;
+    }
+
+    public Boolean getMonitored() {
+      return monitored;
+    }
+
+    public void setMonitored(Boolean monitored) {
+      this.monitored = monitored;
     }
 
     public String getDataSource() {
@@ -134,6 +233,9 @@ public class EstimatedVehicleJourneyEntity {
 
     @PropertyName("RequestStop")
     private Boolean requestStop;
+
+    @PropertyName("DestinationDisplay")
+    private String destinationDisplay;
 
     @PropertyName("AimedArrivalTime")
     private String aimedArrivalTime;
@@ -197,6 +299,14 @@ public class EstimatedVehicleJourneyEntity {
 
     public void setRequestStop(Boolean requestStop) {
       this.requestStop = requestStop;
+    }
+
+    public String getDestinationDisplay() {
+      return destinationDisplay;
+    }
+
+    public void setDestinationDisplay(String destinationDisplay) {
+      this.destinationDisplay = destinationDisplay;
     }
 
     public String getAimedArrivalTime() {

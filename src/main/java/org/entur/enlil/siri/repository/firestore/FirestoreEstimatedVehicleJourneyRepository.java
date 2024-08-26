@@ -3,6 +3,7 @@ package org.entur.enlil.siri.repository.firestore;
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.Firestore;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.ExecutionException;
@@ -20,9 +21,11 @@ public class FirestoreEstimatedVehicleJourneyRepository
   implements EstimatedVehicleJourneyRepository {
 
   private final Firestore firestore;
+  private final Clock clock;
 
-  public FirestoreEstimatedVehicleJourneyRepository(Firestore firestore) {
+  public FirestoreEstimatedVehicleJourneyRepository(Firestore firestore, Clock clock) {
     this.firestore = firestore;
+    this.clock = clock;
   }
 
   @Override
@@ -33,15 +36,13 @@ public class FirestoreEstimatedVehicleJourneyRepository
   }
 
   private Stream<EstimatedVehicleJourneyEntity> getCancellations() {
-    var now = Instant.now().minus(10, ChronoUnit.MINUTES).toEpochMilli();
-
     try {
       return firestore
         .collectionGroup("cancellations")
         .where(
           Filter.greaterThan(
             FieldPath.of("EstimatedVehicleJourney", "ExpiresAtEpochMs"),
-            now
+            Instant.now(clock).minus(10, ChronoUnit.MINUTES).toEpochMilli()
           )
         )
         .get()
@@ -60,7 +61,7 @@ public class FirestoreEstimatedVehicleJourneyRepository
         .where(
           Filter.greaterThan(
             FieldPath.of("EstimatedVehicleJourney", "ExpiresAtEpochMs"),
-            Instant.now().minus(10, ChronoUnit.MINUTES).toEpochMilli()
+            Instant.now(clock).minus(10, ChronoUnit.MINUTES).toEpochMilli()
           )
         )
         .get()
