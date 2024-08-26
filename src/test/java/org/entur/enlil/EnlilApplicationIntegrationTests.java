@@ -145,6 +145,16 @@ class EnlilApplicationIntegrationTests {
     attributes.setXmlLang("no");
     summary.setAttributes(attributes);
     message.setSummary(summary);
+    PtSituationElementEntity.Affects affects = createAffects();
+    message.setAffects(affects);
+    PtSituationElementEntity.ValidityPeriod validityPeriod =
+      new PtSituationElementEntity.ValidityPeriod();
+    validityPeriod.setStartTime("2023-09-19T14:45:00+01:00");
+    message.setValidityPeriod(validityPeriod);
+    return message;
+  }
+
+  private static PtSituationElementEntity.@NotNull Affects createAffects() {
     PtSituationElementEntity.Affects affects = new PtSituationElementEntity.Affects();
     PtSituationElementEntity.Networks networks = new PtSituationElementEntity.Networks();
     PtSituationElementEntity.AffectedNetwork affectedNetwork =
@@ -155,12 +165,7 @@ class EnlilApplicationIntegrationTests {
     affectedNetwork.setAffectedLine(affectedLine);
     networks.setAffectedNetwork(affectedNetwork);
     affects.setNetworks(networks);
-    message.setAffects(affects);
-    PtSituationElementEntity.ValidityPeriod validityPeriod =
-      new PtSituationElementEntity.ValidityPeriod();
-    validityPeriod.setStartTime("2023-09-19T14:45:00+01:00");
-    message.setValidityPeriod(validityPeriod);
-    return message;
+    return affects;
   }
 
   @Test
@@ -217,10 +222,11 @@ class EnlilApplicationIntegrationTests {
     estimatedVehicleJourney.setDataSource("TST");
     estimatedVehicleJourney.setEstimatedCalls(createTestEstimatedCalls());
     estimatedVehicleJourney.setIsCompleteStopSequence(true);
-    estimatedVehicleJourney.expiresAtEpochMs =
-      (Instant.now(clock).plus(20, ChronoUnit.MINUTES).toEpochMilli());
+    estimatedVehicleJourney.setExpiresAtEpochMs(
+      Instant.now(clock).plus(20, ChronoUnit.MINUTES).toEpochMilli()
+    );
 
-    cancellation.EstimatedVehicleJourney = estimatedVehicleJourney;
+    cancellation.setEstimatedVehicleJourney(estimatedVehicleJourney);
 
     return cancellation;
   }

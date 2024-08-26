@@ -5,213 +5,234 @@ import java.util.List;
 
 public class EstimatedVehicleJourneyEntity {
 
+  private EstimatedVehicleJourney estimatedVehicleJourney;
+
   @PropertyName("EstimatedVehicleJourney")
-  public EstimatedVehicleJourney EstimatedVehicleJourney;
+  public EstimatedVehicleJourney getEstimatedVehicleJourney() {
+    return estimatedVehicleJourney;
+  }
+
+  @PropertyName("EstimatedVehicleJourney")
+  public void setEstimatedVehicleJourney(
+    EstimatedVehicleJourney estimatedVehicleJourney
+  ) {
+    this.estimatedVehicleJourney = estimatedVehicleJourney;
+  }
 
   public static class EstimatedVehicleJourney {
 
-    @PropertyName("RecordedAtTime")
     private String recordedAtTime;
-
-    @PropertyName("LineRef")
     private String lineRef;
-
-    @PropertyName("DirectionRef")
     private String directionRef;
-
-    @PropertyName("FramedVehicleJourneyRef")
     private FramedVehicleJourneyRef framedVehicleJourneyRef;
-
-    @PropertyName("Cancellation")
     private Boolean cancellation;
-
-    @PropertyName("EstimatedVehicleJourneyCode")
     private String estimatedVehicleJourneyCode;
-
-    @PropertyName("ExtraJourney")
     private Boolean extraJourney;
-
-    @PropertyName("VehicleMode")
     private String vehicleMode;
-
-    @PropertyName("RouteRef")
     private String routeRef;
-
-    @PropertyName("PublishedLineName")
     private String publishedLineName;
-
-    @PropertyName("GroupOfLinesRef")
     private String groupOfLinesRef;
-
-    @PropertyName("ExternalLineRef")
     private String externalLineRef;
-
-    @PropertyName("OperatorRef")
     private String operatorRef;
-
-    @PropertyName("Monitored")
     private Boolean monitored;
-
-    @PropertyName("DataSource")
     private String dataSource;
-
-    @PropertyName("EstimatedCalls")
     private EstimatedCalls estimatedCalls;
-
-    @PropertyName("IsCompleteStopSequence")
     private Boolean isCompleteStopSequence;
+    private Long expiresAtEpochMs;
 
-    @PropertyName("ExpiresAtEpochMs")
-    public Long expiresAtEpochMs;
-
+    @PropertyName("RecordedAtTime")
     public String getRecordedAtTime() {
       return recordedAtTime;
     }
 
+    @PropertyName("RecordedAtTime")
     public void setRecordedAtTime(String recordedAtTime) {
       this.recordedAtTime = recordedAtTime;
     }
 
+    @PropertyName("LineRef")
     public String getLineRef() {
       return lineRef;
     }
 
+    @PropertyName("LineRef")
     public void setLineRef(String lineRef) {
       this.lineRef = lineRef;
     }
 
+    @PropertyName("DirectionRef")
     public String getDirectionRef() {
       return directionRef;
     }
 
+    @PropertyName("DirectionRef")
     public void setDirectionRef(String directionRef) {
       this.directionRef = directionRef;
     }
 
+    @PropertyName("FramedVehicleJourneyRef")
     public FramedVehicleJourneyRef getFramedVehicleJourneyRef() {
       return framedVehicleJourneyRef;
     }
 
+    @PropertyName("FramedVehicleJourneyRef")
     public void setFramedVehicleJourneyRef(
       FramedVehicleJourneyRef framedVehicleJourneyRef
     ) {
       this.framedVehicleJourneyRef = framedVehicleJourneyRef;
     }
 
+    @PropertyName("Cancellation")
     public Boolean getCancellation() {
       return cancellation;
     }
 
+    @PropertyName("Cancellation")
     public void setCancellation(Boolean cancellation) {
       this.cancellation = cancellation;
     }
 
+    @PropertyName("EstimatedVehicleJourneyCode")
     public String getEstimatedVehicleJourneyCode() {
       return estimatedVehicleJourneyCode;
     }
 
+    @PropertyName("EstimatedVehicleJourneyCode")
     public void setEstimatedVehicleJourneyCode(String estimatedVehicleJourneyCode) {
       this.estimatedVehicleJourneyCode = estimatedVehicleJourneyCode;
     }
 
+    @PropertyName("ExtraJourney")
     public Boolean getExtraJourney() {
       return extraJourney;
     }
 
+    @PropertyName("ExtraJourney")
     public void setExtraJourney(Boolean extraJourney) {
       this.extraJourney = extraJourney;
     }
 
+    @PropertyName("VehicleMode")
     public String getVehicleMode() {
       return vehicleMode;
     }
 
+    @PropertyName("VehicleMode")
     public void setVehicleMode(String vehicleMode) {
       this.vehicleMode = vehicleMode;
     }
 
+    @PropertyName("RouteRef")
     public String getRouteRef() {
       return routeRef;
     }
 
+    @PropertyName("RouteRef")
     public void setRouteRef(String routeRef) {
       this.routeRef = routeRef;
     }
 
+    @PropertyName("PublishedLineName")
     public String getPublishedLineName() {
       return publishedLineName;
     }
 
+    @PropertyName("PublishedLineName")
     public void setPublishedLineName(String publishedLineName) {
       this.publishedLineName = publishedLineName;
     }
 
+    @PropertyName("GroupOfLinesRef")
     public String getGroupOfLinesRef() {
       return groupOfLinesRef;
     }
 
+    @PropertyName("GroupOfLinesRef")
     public void setGroupOfLinesRef(String groupOfLinesRef) {
       this.groupOfLinesRef = groupOfLinesRef;
     }
 
+    @PropertyName("ExternalLineRef")
     public String getExternalLineRef() {
       return externalLineRef;
     }
 
+    @PropertyName("ExternalLineRef")
     public void setExternalLineRef(String externalLineRef) {
       this.externalLineRef = externalLineRef;
     }
 
+    @PropertyName("OperatorRef")
     public String getOperatorRef() {
       return operatorRef;
     }
 
+    @PropertyName("OperatorRef")
     public void setOperatorRef(String operatorRef) {
       this.operatorRef = operatorRef;
     }
 
+    @PropertyName("Monitored")
     public Boolean getMonitored() {
       return monitored;
     }
 
+    @PropertyName("Monitored")
     public void setMonitored(Boolean monitored) {
       this.monitored = monitored;
     }
 
+    @PropertyName("DataSource")
     public String getDataSource() {
       return dataSource;
     }
 
+    @PropertyName("DataSource")
     public void setDataSource(String dataSource) {
       this.dataSource = dataSource;
     }
 
+    @PropertyName("EstimatedCalls")
     public EstimatedCalls getEstimatedCalls() {
       return estimatedCalls;
     }
 
+    @PropertyName("EstimatedCalls")
     public void setEstimatedCalls(EstimatedCalls estimatedCalls) {
       this.estimatedCalls = estimatedCalls;
     }
 
+    @PropertyName("IsCompleteStopSequence")
     public Boolean getIsCompleteStopSequence() {
       return isCompleteStopSequence;
     }
 
+    @PropertyName("IsCompleteStopSequence")
     public void setIsCompleteStopSequence(Boolean isCompleteStopSequence) {
-      isCompleteStopSequence = isCompleteStopSequence;
+      this.isCompleteStopSequence = isCompleteStopSequence;
+    }
+
+    @PropertyName("ExpiresAtEpochMs")
+    public Long getExpiresAtEpochMs() {
+      return expiresAtEpochMs;
+    }
+
+    @PropertyName("ExpiresAtEpochMs")
+    public void setExpiresAtEpochMs(Long expiresAtEpochMs) {
+      this.expiresAtEpochMs = expiresAtEpochMs;
     }
   }
 
   public static class EstimatedCalls {
 
-    @PropertyName("EstimatedCall")
-    List<EstimatedCall> estimatedCall;
+    private List<EstimatedCall> estimatedCall;
 
+    @PropertyName("EstimatedCall")
     public List<EstimatedCall> getEstimatedCall() {
       return estimatedCall;
     }
 
+    @PropertyName("EstimatedCall")
     public void setEstimatedCall(List<EstimatedCall> estimatedCall) {
       this.estimatedCall = estimatedCall;
     }
@@ -219,156 +240,167 @@ public class EstimatedVehicleJourneyEntity {
 
   public static class EstimatedCall {
 
-    @PropertyName("StopPointRef")
     private String stopPointRef;
-
-    @PropertyName("Order")
     private Integer order;
-
-    @PropertyName("StopPointName")
     private String stopPointName;
-
-    @PropertyName("Cancellation")
     private Boolean cancellation;
 
-    @PropertyName("RequestStop")
     private Boolean requestStop;
 
-    @PropertyName("DestinationDisplay")
     private String destinationDisplay;
 
-    @PropertyName("AimedArrivalTime")
     private String aimedArrivalTime;
 
-    @PropertyName("ExpectedArrivalTime")
     private String expectedArrivalTime;
 
-    @PropertyName("AimedDepartureTime")
     private String aimedDepartureTime;
 
-    @PropertyName("ExpectedDepartureTime")
     private String expectedDepartureTime;
 
-    @PropertyName("ArrivalStatus")
     private String arrivalStatus;
 
-    @PropertyName("ArrivalBoardingActivity")
     private String arrivalBoardingActivity;
 
-    @PropertyName("DepartureStatus")
     private String departureStatus;
 
-    @PropertyName("DepartureBoardingActivity")
     private String departureBoardingActivity;
 
+    @PropertyName("StopPointRef")
     public String getStopPointRef() {
       return stopPointRef;
     }
 
+    @PropertyName("StopPointRef")
     public void setStopPointRef(String stopPointRef) {
       this.stopPointRef = stopPointRef;
     }
 
+    @PropertyName("Order")
     public Integer getOrder() {
       return order;
     }
 
+    @PropertyName("Order")
     public void setOrder(Integer order) {
       this.order = order;
     }
 
+    @PropertyName("StopPointName")
     public String getStopPointName() {
       return stopPointName;
     }
 
+    @PropertyName("StopPointName")
     public void setStopPointName(String stopPointName) {
       this.stopPointName = stopPointName;
     }
 
+    @PropertyName("Cancellation")
     public Boolean getCancellation() {
       return cancellation;
     }
 
+    @PropertyName("Cancellation")
     public void setCancellation(Boolean cancellation) {
       this.cancellation = cancellation;
     }
 
+    @PropertyName("RequestStop")
     public Boolean getRequestStop() {
       return requestStop;
     }
 
+    @PropertyName("RequestStop")
     public void setRequestStop(Boolean requestStop) {
       this.requestStop = requestStop;
     }
 
+    @PropertyName("DestinationDisplay")
     public String getDestinationDisplay() {
       return destinationDisplay;
     }
 
+    @PropertyName("DestinationDisplay")
     public void setDestinationDisplay(String destinationDisplay) {
       this.destinationDisplay = destinationDisplay;
     }
 
+    @PropertyName("AimedArrivalTime")
     public String getAimedArrivalTime() {
       return aimedArrivalTime;
     }
 
+    @PropertyName("AimedArrivalTime")
     public void setAimedArrivalTime(String aimedArrivalTime) {
       this.aimedArrivalTime = aimedArrivalTime;
     }
 
+    @PropertyName("ExpectedArrivalTime")
     public String getExpectedArrivalTime() {
       return expectedArrivalTime;
     }
 
+    @PropertyName("ExpectedArrivalTime")
     public void setExpectedArrivalTime(String expectedArrivalTime) {
       this.expectedArrivalTime = expectedArrivalTime;
     }
 
+    @PropertyName("AimedDepartureTime")
     public String getAimedDepartureTime() {
       return aimedDepartureTime;
     }
 
+    @PropertyName("AimedDepartureTime")
     public void setAimedDepartureTime(String aimedDepartureTime) {
       this.aimedDepartureTime = aimedDepartureTime;
     }
 
+    @PropertyName("ExpectedDepartureTime")
     public String getExpectedDepartureTime() {
       return expectedDepartureTime;
     }
 
+    @PropertyName("ExpectedDepartureTime")
     public void setExpectedDepartureTime(String expectedDepartureTime) {
       this.expectedDepartureTime = expectedDepartureTime;
     }
 
+    @PropertyName("ArrivalStatus")
     public String getArrivalStatus() {
       return arrivalStatus;
     }
 
+    @PropertyName("ArrivalStatus")
     public void setArrivalStatus(String arrivalStatus) {
       this.arrivalStatus = arrivalStatus;
     }
 
+    @PropertyName("ArrivalBoardingActivity")
     public String getArrivalBoardingActivity() {
       return arrivalBoardingActivity;
     }
 
+    @PropertyName("ArrivalBoardingActivity")
     public void setArrivalBoardingActivity(String arrivalBoardingActivity) {
       this.arrivalBoardingActivity = arrivalBoardingActivity;
     }
 
+    @PropertyName("DepartureStatus")
     public String getDepartureStatus() {
       return departureStatus;
     }
 
+    @PropertyName("DepartureStatus")
     public void setDepartureStatus(String departureStatus) {
       this.departureStatus = departureStatus;
     }
 
+    @PropertyName("DepartureBoardingActivity")
     public String getDepartureBoardingActivity() {
       return departureBoardingActivity;
     }
 
+    @PropertyName("DepartureBoardingActivity")
     public void setDepartureBoardingActivity(String departureBoardingActivity) {
       this.departureBoardingActivity = departureBoardingActivity;
     }

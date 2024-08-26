@@ -23,19 +23,19 @@ public class EstimatedVehicleJourneyEntityToSiriMapper {
     EstimatedVehicleJourney estimatedVehicleJourney = new EstimatedVehicleJourney();
     estimatedVehicleJourney.setRecordedAtTime(
       DateMapper.mapISOStringToZonedDateTime(
-        Objects.requireNonNull(dto.EstimatedVehicleJourney.getRecordedAtTime())
+        Objects.requireNonNull(dto.getEstimatedVehicleJourney().getRecordedAtTime())
       )
     );
     estimatedVehicleJourney.setLineRef(
-      SiriObjectFactory.createLineRef(dto.EstimatedVehicleJourney.getLineRef())
+      SiriObjectFactory.createLineRef(dto.getEstimatedVehicleJourney().getLineRef())
     );
     estimatedVehicleJourney.setDirectionRef(
       SiriObjectFactory.createDirectionRefStructure(
-        dto.EstimatedVehicleJourney.getDirectionRef()
+        dto.getEstimatedVehicleJourney().getDirectionRef()
       )
     );
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getFramedVehicleJourneyRef())
+      .ofNullable(dto.getEstimatedVehicleJourney().getFramedVehicleJourneyRef())
       .ifPresent(framedVehicleJourneyRef ->
         estimatedVehicleJourney.setFramedVehicleJourneyRef(
           SiriObjectFactory.createFramedVehicleJourneyRefStructure(
@@ -46,59 +46,62 @@ public class EstimatedVehicleJourneyEntityToSiriMapper {
       );
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getCancellation())
+      .ofNullable(dto.getEstimatedVehicleJourney().getCancellation())
       .ifPresent(estimatedVehicleJourney::setCancellation);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getEstimatedVehicleJourneyCode())
+      .ofNullable(dto.getEstimatedVehicleJourney().getEstimatedVehicleJourneyCode())
       .ifPresent(estimatedVehicleJourney::setEstimatedVehicleJourneyCode);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getExtraJourney())
+      .ofNullable(dto.getEstimatedVehicleJourney().getExtraJourney())
       .ifPresent(estimatedVehicleJourney::setExtraJourney);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getVehicleMode())
+      .ofNullable(dto.getEstimatedVehicleJourney().getVehicleMode())
       .map(VehicleModesEnumeration::fromValue)
       .ifPresent(vehicleMode -> estimatedVehicleJourney.getVehicleModes().add(vehicleMode)
       );
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getRouteRef())
+      .ofNullable(dto.getEstimatedVehicleJourney().getRouteRef())
       .map(SiriObjectFactory::createRouteRefStructure)
       .ifPresent(estimatedVehicleJourney::setRouteRef);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getPublishedLineName())
+      .ofNullable(dto.getEstimatedVehicleJourney().getPublishedLineName())
       .map(SiriObjectFactory::createNaturalLanguageStringStructure)
       .ifPresent(publishedLineName ->
         estimatedVehicleJourney.getPublishedLineNames().add(publishedLineName)
       );
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getGroupOfLinesRef())
+      .ofNullable(dto.getEstimatedVehicleJourney().getGroupOfLinesRef())
       .map(SiriObjectFactory::createGroupOfLinesRefStructure)
       .ifPresent(estimatedVehicleJourney::setGroupOfLinesRef);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getExternalLineRef())
+      .ofNullable(dto.getEstimatedVehicleJourney().getExternalLineRef())
       .map(SiriObjectFactory::createLineRef)
       .ifPresent(estimatedVehicleJourney::setExternalLineRef);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getOperatorRef())
+      .ofNullable(dto.getEstimatedVehicleJourney().getOperatorRef())
       .map(SiriObjectFactory::createOperatorRefStructure)
       .ifPresent(estimatedVehicleJourney::setOperatorRef);
 
     Optional
-      .ofNullable(dto.EstimatedVehicleJourney.getMonitored())
+      .ofNullable(dto.getEstimatedVehicleJourney().getMonitored())
       .ifPresent(estimatedVehicleJourney::setMonitored);
 
-    estimatedVehicleJourney.setDataSource(dto.EstimatedVehicleJourney.getDataSource());
+    estimatedVehicleJourney.setDataSource(
+      dto.getEstimatedVehicleJourney().getDataSource()
+    );
 
     estimatedVehicleJourney.setEstimatedCalls(
       SiriObjectFactory.createEstimatedCalls(
-        dto.EstimatedVehicleJourney
+        dto
+          .getEstimatedVehicleJourney()
           .getEstimatedCalls()
           .getEstimatedCall()
           .stream()
@@ -108,7 +111,7 @@ public class EstimatedVehicleJourneyEntityToSiriMapper {
     );
 
     estimatedVehicleJourney.setIsCompleteStopSequence(
-      dto.EstimatedVehicleJourney.getIsCompleteStopSequence()
+      dto.getEstimatedVehicleJourney().getIsCompleteStopSequence()
     );
 
     return estimatedVehicleJourney;
