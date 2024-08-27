@@ -66,8 +66,12 @@ public class EstimatedVehicleJourneyEntity {
     }
 
     @PropertyName("DirectionRef")
-    public void setDirectionRef(String directionRef) {
-      this.directionRef = directionRef;
+    public void setDirectionRef(Object directionRef) {
+      try {
+        this.directionRef = (String) directionRef;
+      } catch (ClassCastException e) {
+        this.directionRef = ((Long) directionRef).toString();
+      }
     }
 
     @PropertyName("FramedVehicleJourneyRef")
