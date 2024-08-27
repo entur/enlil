@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import org.entur.enlil.configuration.EnlilConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.org.siri.siri21.AffectedLineStructure;
 import uk.org.siri.siri21.AffectedRouteStructure;
