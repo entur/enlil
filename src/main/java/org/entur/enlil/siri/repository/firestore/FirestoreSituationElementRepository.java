@@ -11,7 +11,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
-
 import org.entur.enlil.siri.helpers.DateMapper;
 import org.entur.enlil.siri.repository.SituationElementRepository;
 import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
@@ -23,7 +22,10 @@ import uk.org.siri.siri21.PtSituationElement;
 
 @Repository
 public class FirestoreSituationElementRepository implements SituationElementRepository {
-    private final Logger logger = LoggerFactory.getLogger(FirestoreSituationElementRepository.class);
+
+  private final Logger logger = LoggerFactory.getLogger(
+    FirestoreSituationElementRepository.class
+  );
   private final Firestore firestore;
   private final Clock clock;
 
@@ -71,51 +73,56 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
 
   @Override
   public void closeOpenExpiredMessages() {
-      firestore.runTransaction(transaction -> {
-          transaction.get(
-                          firestore
-                                  .collectionGroup("messages")
-                                  .where(Filter.equalTo("Progress", "open"))
-                  )
-                  .get(5, TimeUnit.SECONDS)
-                  .forEach(docRef -> {
-                      var doc = docRef.toObject(PtSituationElementEntity.class);
-                      if (doc.getValidityPeriod().getEndTime() != null &&
-                              ZonedDateTime.now(clock).isAfter(
-                                      DateMapper.mapISOStringToZonedDateTime(
-                                              doc.getValidityPeriod().getEndTime()
-                                      )
-                              )
-                      ) {
-                          // extend end time
-                          String newEndTime =
-                                  DateMapper.mapZonedDateTimeToString(
-                                          ZonedDateTime.now(clock).plusHours(5)
-                                  );
+    firestore.runTransaction(transaction -> {
+      transaction
+        .get(
+          firestore.collectionGroup("messages").where(Filter.equalTo("Progress", "open"))
+        )
+        .get(5, TimeUnit.SECONDS)
+        .forEach(docRef -> {
+          var doc = docRef.toObject(PtSituationElementEntity.class);
+          if (
+            doc.getValidityPeriod().getEndTime() != null &&
+            ZonedDateTime
+              .now(clock)
+              .isAfter(
+                DateMapper.mapISOStringToZonedDateTime(
+                  doc.getValidityPeriod().getEndTime()
+                )
+              )
+          ) {
+            // extend end time
+            String newEndTime = DateMapper.mapZonedDateTimeToString(
+              ZonedDateTime.now(clock).plusHours(5)
+            );
 
-                          logger.info(
-                                  "Clossing message id={} situationNumber={} newEndTime={}",
-                                  docRef.getId(),
-                                  doc.getSituationNumber(),
-                                  newEndTime
-                          );
+            logger.info(
+              "Clossing message id={} situationNumber={} newEndTime={}",
+              docRef.getId(),
+              doc.getSituationNumber(),
+              newEndTime
+            );
 
-                          // update document
-                          transaction.update(
-                                  docRef.getReference(),
-                                  Map.of(
-                                          "Progress", "closed",
-                                          "ValidityPeriod", Map.of(
-                                                  "StartTime", doc.getValidityPeriod().getStartTime(),
-                                                  "EndTime", newEndTime
-                                          )
-                                  )
-                          );
-                      } else {
-                          logger.info("Message not eligible to be closed.");
-                      }
-                  });
-          return transaction;
-      });
+            // update document
+            transaction.update(
+              docRef.getReference(),
+              Map.of(
+                "Progress",
+                "closed",
+                "ValidityPeriod",
+                Map.of(
+                  "StartTime",
+                  doc.getValidityPeriod().getStartTime(),
+                  "EndTime",
+                  newEndTime
+                )
+              )
+            );
+          } else {
+            logger.info("Message not eligible to be closed.");
+          }
+        });
+      return transaction;
+    });
   }
 }
