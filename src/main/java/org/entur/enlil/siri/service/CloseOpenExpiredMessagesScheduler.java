@@ -16,7 +16,10 @@ public class CloseOpenExpiredMessagesScheduler {
     this.situationElementRepository = situationElementRepository;
   }
 
-  @Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+  @Scheduled(
+    fixedRateString = "${org.entur.enlil.closeOpenExpired.schedule.fixedRate:10}",
+    timeUnit = TimeUnit.MINUTES
+  )
   public void closeOpenExpiredMessages() {
     situationElementRepository.closeOpenExpiredMessages();
   }
