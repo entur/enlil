@@ -33,6 +33,6 @@ public class DateMapper {
   }
 
   public static String mapZonedDateTimeToString(ZonedDateTime date) {
-    return date.format(DateTimeFormatter.ISO_DATE_TIME);
+    return date.format(DateTimeFormatter.ISO_DATE);
   }
 }

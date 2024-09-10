@@ -5,7 +5,6 @@ import com.google.cloud.firestore.Firestore;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -118,8 +117,6 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
                 )
               )
             );
-          } else {
-            logger.info("Message not eligible to be closed.");
           }
         });
       return transaction;
