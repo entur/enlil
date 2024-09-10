@@ -31,4 +31,8 @@ public class DateMapper {
       ZoneOffset.UTC
     );
   }
+
+  public static String mapZonedDateTimeToString(ZonedDateTime date) {
+    return date.format(DateTimeFormatter.ISO_DATE);
+  }
 }
