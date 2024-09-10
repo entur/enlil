@@ -60,7 +60,7 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
       return firestore
         .collectionGroup("messages")
         .where(Filter.equalTo("Progress", "closed"))
-        .where(Filter.greaterThan("ValidityPeriod.EndTime", Instant.now(clock)))
+        .where(Filter.greaterThan("ValidityPeriod.EndTime", DateMapper.mapZonedDateTimeToString(ZonedDateTime.now(clock))))
         .get()
         .get(5, TimeUnit.SECONDS)
         .toObjects(PtSituationElementEntity.class)
