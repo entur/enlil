@@ -5,6 +5,7 @@ import java.util.List;
 
 public class PtSituationElementEntity {
 
+  private String id;
   private String creationTime;
   private String participantRef;
   private String situationNumber;
@@ -18,6 +19,14 @@ public class PtSituationElementEntity {
   private Text advice;
   private Affects affects;
   private InfoLinks infoLinks;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   @PropertyName("CreationTime")
   public String getCreationTime() {
