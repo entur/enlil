@@ -12,7 +12,7 @@ type Query {
 }
 
 type Mutation {
-    createOrUpdateSituationElement(codespace: String!, authority: String!, input: SituationElementInput!): Int
+    createOrUpdateSituationElement(codespace: String!, authority: String!, input: SituationElementInput!): String
 }
 
 type SituationElement {

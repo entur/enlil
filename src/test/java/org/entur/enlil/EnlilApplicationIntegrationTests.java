@@ -52,7 +52,7 @@ import uk.org.siri.siri21.Siri;
 @Testcontainers
 @TestPropertySource("classpath:application-test.properties")
 @ExtendWith({ SnapshotExtension.class, MockitoExtension.class })
-@ActiveProfiles({ "test" })
+@ActiveProfiles({ "test", "local-no-authentication" })
 class EnlilApplicationIntegrationTests {
 
   @LocalServerPort
