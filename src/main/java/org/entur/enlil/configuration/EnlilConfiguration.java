@@ -20,7 +20,7 @@ public class EnlilConfiguration {
   }
 
   @Bean
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingBean(Clock.class)
   Clock clock() {
     return Clock.systemDefaultZone();
   }
