@@ -35,9 +35,4 @@ public class LocalSecurityConfiguration {
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }
-
-  @Bean
-  public UserContextService userContextService() {
-    return new DefaltUserContextService();
-  }
 }

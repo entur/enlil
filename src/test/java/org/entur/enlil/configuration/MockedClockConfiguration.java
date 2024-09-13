@@ -1,4 +1,4 @@
-package org.entur.enlil.stubs;
+package org.entur.enlil.configuration;
 
 import java.time.Clock;
 import java.time.Instant;

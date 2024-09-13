@@ -1,10 +1,9 @@
-package org.entur.enlil.security;
+package org.entur.enlil.stubs;
 
 import java.util.List;
 import org.entur.enlil.security.spi.UserContextService;
 
-// TODO this needs to change
-public class DefaltUserContextService implements UserContextService {
+public class UserContextServiceStub implements UserContextService {
 
   @Override
   public boolean hasAccessToCodespace(String codespace) {
