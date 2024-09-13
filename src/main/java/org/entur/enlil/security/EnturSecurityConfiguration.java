@@ -1,6 +1,7 @@
 package org.entur.enlil.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.entur.enlil.security.spi.UserContextService;
 import org.entur.oauth2.JwtRoleAssignmentExtractor;
 import org.entur.oauth2.RorAuthenticationConverter;
 import org.entur.oauth2.multiissuer.MultiIssuerAuthenticationManagerResolverBuilder;
@@ -33,19 +34,6 @@ public class EnturSecurityConfiguration {
     return new JwtUserInfoExtractor();
   }
 
-  /*@Bean
-    public UserContextService userContextService(
-            ProviderRepository providerRepository,
-            RoleAssignmentExtractor roleAssignmentExtractor,
-            UserInfoExtractor userInfoExtractor
-    ) {
-        return new EnturUserContextService(
-                providerRepository,
-                roleAssignmentExtractor,
-                userInfoExtractor
-        );
-    }*/
-
   @Bean
   public AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(
     @Value(
@@ -71,5 +59,12 @@ public class EnturSecurityConfiguration {
       .withRorAuth0Audience(rorAuth0Audience)
       .withRorAuth0ClaimNamespace(rorAuth0ClaimNamespace)
       .build();
+  }
+
+  @Bean
+  public UserContextService userContextService(
+    RoleAssignmentExtractor roleAssignmentExtractor
+  ) {
+    return new EnturUserContextService(roleAssignmentExtractor);
   }
 }

@@ -4,11 +4,14 @@ schema {
 }
 
 type Query {
+    userContext: UserContext
+    situationElements(codespace: String!, authority: String!): [SituationElement]
+}
+
+type UserContext {
 
     # Codespaces that the current user has access to
-    # codespaces: [String]
-
-    situationElements(codespace: String!, authority: String!): [SituationElement]
+    allowedCodespaces: [String]
 }
 
 type Mutation {

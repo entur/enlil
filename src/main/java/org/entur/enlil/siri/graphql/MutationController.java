@@ -5,6 +5,7 @@ import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -18,6 +19,7 @@ public class MutationController {
   }
 
   @MutationMapping
+  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
   public PtSituationElementEntity createSituationElement(
     @Argument PtSituationElementEntity input
   ) {
@@ -25,6 +27,7 @@ public class MutationController {
   }
 
   @MutationMapping
+  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
   public String createOrUpdateSituationElement(
     @Argument String codespace,
     @Argument String authority,
