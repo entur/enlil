@@ -36,6 +36,7 @@ public class EnlilSecurityConfiguration {
     AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver
   ) throws Exception {
     return http
+      .csrf(csrf -> csrf.ignoringRequestMatchers("/siri"))
       .authorizeHttpRequests(auth ->
         auth
           .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/prometheus"))
