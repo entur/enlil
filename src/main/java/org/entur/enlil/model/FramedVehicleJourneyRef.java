@@ -1,4 +1,4 @@
-package org.entur.enlil.siri.repository.firestore.entity;
+package org.entur.enlil.model;
 
 import com.google.cloud.firestore.annotation.PropertyName;
 

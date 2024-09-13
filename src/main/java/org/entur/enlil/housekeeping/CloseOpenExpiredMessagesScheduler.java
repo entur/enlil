@@ -1,7 +1,7 @@
-package org.entur.enlil.siri.service;
+package org.entur.enlil.housekeeping;
 
 import java.util.concurrent.TimeUnit;
-import org.entur.enlil.siri.repository.SituationElementRepository;
+import org.entur.enlil.repository.SituationElementRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

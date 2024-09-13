@@ -2,7 +2,6 @@ package org.entur.enlil.security;
 
 import java.util.Arrays;
 import java.util.List;
-import org.entur.enlil.security.spi.UserContextService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

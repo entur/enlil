@@ -1,11 +1,11 @@
-package org.entur.enlil.siri.repository;
+package org.entur.enlil.repository;
 
 import java.util.stream.Stream;
-import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
+import org.entur.enlil.model.PtSituationElementEntity;
 import uk.org.siri.siri21.PtSituationElement;
 
 public interface SituationElementRepository {
-  Stream<PtSituationElement> getAllSituationElements();
+  Stream<PtSituationElementEntity> getAllSituationElements();
   void closeOpenExpiredMessages();
   Stream<PtSituationElementEntity> getAllSituationElementsByCodespace(
     String codespace,

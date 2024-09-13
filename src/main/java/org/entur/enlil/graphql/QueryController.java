@@ -1,10 +1,10 @@
-package org.entur.enlil.siri.graphql;
+package org.entur.enlil.graphql;
 
 import java.util.Collection;
+import org.entur.enlil.graphql.model.UserContext;
+import org.entur.enlil.model.PtSituationElementEntity;
+import org.entur.enlil.repository.SituationElementRepository;
 import org.entur.enlil.security.spi.UserContextService;
-import org.entur.enlil.siri.graphql.model.UserContext;
-import org.entur.enlil.siri.repository.SituationElementRepository;
-import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;

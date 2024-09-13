@@ -69,16 +69,6 @@ public class EnlilSecurityConfiguration {
     return source;
   }
 
-  /*@ConditionalOnMissingBean
-    @ConditionalOnProperty(
-            value = "uttu.security.user-context-service",
-            havingValue = "full-access"
-    )
-    @Bean
-    public UserContextService userContextService() {
-        return new FullAccessUserContextService();
-    }*/
-
   @ConditionalOnMissingBean
   @Bean
   public AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver(

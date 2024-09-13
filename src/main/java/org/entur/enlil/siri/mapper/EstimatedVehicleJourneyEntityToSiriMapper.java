@@ -1,11 +1,11 @@
-package org.entur.enlil.siri.repository.firestore.mapper;
+package org.entur.enlil.siri.mapper;
 
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
+import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.siri.helpers.DateMapper;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
-import org.entur.enlil.siri.repository.firestore.entity.EstimatedVehicleJourneyEntity;
 import uk.org.siri.siri21.ArrivalBoardingActivityEnumeration;
 import uk.org.siri.siri21.CallStatusEnumeration;
 import uk.org.siri.siri21.DepartureBoardingActivityEnumeration;

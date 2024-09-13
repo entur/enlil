@@ -15,13 +15,10 @@
 
 package org.entur.enlil.siri.service;
 
-import com.google.cloud.spring.data.firestore.FirestoreTemplate;
-import java.util.Collections;
-import java.util.List;
+import org.entur.enlil.repository.EstimatedVehicleJourneyRepository;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
-import org.entur.enlil.siri.repository.EstimatedVehicleJourneyRepository;
+import org.entur.enlil.siri.mapper.EstimatedVehicleJourneyEntityToSiriMapper;
 import org.springframework.stereotype.Service;
-import uk.org.siri.siri21.EstimatedVehicleJourney;
 import uk.org.siri.siri21.Siri;
 
 @Service
@@ -40,7 +37,10 @@ public class EstimatedTimetableDeliveryService {
 
   public Siri getEstimatedTimetableDelivery() {
     return siriObjectFactory.createETServiceDelivery(
-      estimatedVehicleJourneyRepository.getAllEstimatedVehicleJourneys().toList()
+      estimatedVehicleJourneyRepository
+        .getAllEstimatedVehicleJourneys()
+        .map(EstimatedVehicleJourneyEntityToSiriMapper::mapToEstimatedVehicleJourney)
+        .toList()
     );
   }
 }

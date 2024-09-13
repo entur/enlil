@@ -1,4 +1,4 @@
-package org.entur.enlil.siri.service;
+package org.entur.enlil.siri.service.filter;
 
 import java.time.ZonedDateTime;
 import java.util.function.Predicate;

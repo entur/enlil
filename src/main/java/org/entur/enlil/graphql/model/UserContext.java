@@ -1,4 +1,4 @@
-package org.entur.enlil.siri.graphql.model;
+package org.entur.enlil.graphql.model;
 
 import java.util.List;
 
