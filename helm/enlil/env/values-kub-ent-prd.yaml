@@ -4,4 +4,9 @@ common:
     host: enlil.entur.io
 configMap:
   firestoreProjectId: deviation-messages-prod
-
+  auth0:
+    ror:
+      url: https://auth2.entur.org/
+      audience: https://ror.api.entur.io
+    partner:
+      url: https://partner.entur.org/
