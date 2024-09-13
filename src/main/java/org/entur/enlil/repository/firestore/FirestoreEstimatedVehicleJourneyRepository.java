@@ -1,4 +1,4 @@
-package org.entur.enlil.siri.repository.firestore;
+package org.entur.enlil.repository.firestore;
 
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Filter;
@@ -10,11 +10,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
-import org.entur.enlil.siri.repository.EstimatedVehicleJourneyRepository;
-import org.entur.enlil.siri.repository.firestore.entity.EstimatedVehicleJourneyEntity;
-import org.entur.enlil.siri.repository.firestore.mapper.EstimatedVehicleJourneyEntityToSiriMapper;
+import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
+import org.entur.enlil.repository.EstimatedVehicleJourneyRepository;
 import org.springframework.stereotype.Repository;
-import uk.org.siri.siri21.EstimatedVehicleJourney;
 
 @Repository
 public class FirestoreEstimatedVehicleJourneyRepository
@@ -29,10 +27,8 @@ public class FirestoreEstimatedVehicleJourneyRepository
   }
 
   @Override
-  public Stream<EstimatedVehicleJourney> getAllEstimatedVehicleJourneys() {
-    return Stream
-      .concat(getCancellations(), getExtraJourneys())
-      .map(EstimatedVehicleJourneyEntityToSiriMapper::mapToEstimatedVehicleJourney);
+  public Stream<EstimatedVehicleJourneyEntity> getAllEstimatedVehicleJourneys() {
+    return Stream.concat(getCancellations(), getExtraJourneys());
   }
 
   private Stream<EstimatedVehicleJourneyEntity> getCancellations() {

@@ -1,10 +1,10 @@
-package org.entur.enlil.siri.repository.firestore.mapper;
+package org.entur.enlil.siri.mapper;
 
 import java.util.Objects;
 import java.util.Optional;
+import org.entur.enlil.model.PtSituationElementEntity;
 import org.entur.enlil.siri.helpers.DateMapper;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
-import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
 import uk.org.siri.siri21.PtSituationElement;
 import uk.org.siri.siri21.ReportTypeEnumeration;
 import uk.org.siri.siri21.SeverityEnumeration;

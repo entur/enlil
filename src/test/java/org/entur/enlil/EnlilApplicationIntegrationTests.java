@@ -14,10 +14,10 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import org.entur.enlil.siri.repository.firestore.entity.EstimatedVehicleJourneyEntity;
-import org.entur.enlil.siri.repository.firestore.entity.FramedVehicleJourneyRef;
-import org.entur.enlil.siri.repository.firestore.entity.PtSituationElementEntity;
-import org.entur.enlil.stubs.MockedClockConfiguration;
+import org.entur.enlil.configuration.MockedClockConfiguration;
+import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
+import org.entur.enlil.model.FramedVehicleJourneyRef;
+import org.entur.enlil.model.PtSituationElementEntity;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +52,7 @@ import uk.org.siri.siri21.Siri;
 @Testcontainers
 @TestPropertySource("classpath:application-test.properties")
 @ExtendWith({ SnapshotExtension.class, MockitoExtension.class })
-@ActiveProfiles({ "test" })
+@ActiveProfiles({ "test", "local-no-authentication" })
 class EnlilApplicationIntegrationTests {
 
   @LocalServerPort

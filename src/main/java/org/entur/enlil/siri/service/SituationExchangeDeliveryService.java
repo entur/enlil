@@ -18,8 +18,10 @@ package org.entur.enlil.siri.service;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.List;
+import org.entur.enlil.repository.SituationElementRepository;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
-import org.entur.enlil.siri.repository.SituationElementRepository;
+import org.entur.enlil.siri.mapper.SituationElementEntityToSiriMapper;
+import org.entur.enlil.siri.service.filter.OpenExpiredMessagesFilter;
 import org.springframework.stereotype.Service;
 import uk.org.siri.siri21.PtSituationElement;
 import uk.org.siri.siri21.Siri;
@@ -44,6 +46,7 @@ public class SituationExchangeDeliveryService {
   public Siri getSituationExchangeDelivery() {
     List<PtSituationElement> ptSituationElements = situationElementRepository
       .getAllSituationElements()
+      .map(SituationElementEntityToSiriMapper::mapToPtSituationElement)
       .filter(new OpenExpiredMessagesFilter(ZonedDateTime.now(clock)))
       .toList();
 

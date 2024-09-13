@@ -7,8 +7,11 @@ metadata:
     {{- include "labels" . |trim| nindent 4 }}
 data:
   application.properties: |-
+    # Firestore
     spring.cloud.gcp.firestore.enabled=true
     spring.cloud.gcp.firestore.project-id={{ .Values.configMap.firestoreProjectId }}
+
+    # Management server
     management.server.port=9001
     management.endpoints.enabled-by-default=false
     management.endpoint.info.enabled=true
@@ -18,3 +21,17 @@ data:
     management.endpoint.prometheus.enabled=true
     management.endpoints.web.exposure.include=info,health,prometheus,env,metrics
 
+    # OAuth2 Resource Server
+    uttu.oauth2.resourceserver.auth0.ror.claim.namespace=https://ror.entur.io/
+
+    # OAuth2 Resource Server for Entur Partner tenant
+    uttu.oauth2.resourceserver.auth0.entur.partner.jwt.issuer-uri={{ .Values.configMap.auth0.partner.url }}
+    uttu.oauth2.resourceserver.auth0.entur.partner.jwt.audience={{ .Values.configMap.auth0.ror.audience }}
+
+    # OAuth2 Resource Server for RoR tenant
+    uttu.oauth2.resourceserver.auth0.ror.jwt.issuer-uri={{ .Values.configMap.auth0.ror.url }}
+    uttu.oauth2.resourceserver.auth0.ror.jwt.audience={{ .Values.configMap.auth0.ror.audience }}
+
+    # Beans and profiles
+    spring.profiles.active=entur,scheduling
+    spring.main.allow-bean-definition-overriding=true
