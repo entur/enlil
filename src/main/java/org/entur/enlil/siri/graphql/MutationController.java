@@ -20,14 +20,6 @@ public class MutationController {
 
   @MutationMapping
   @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
-  public PtSituationElementEntity createSituationElement(
-    @Argument PtSituationElementEntity input
-  ) {
-    return input;
-  }
-
-  @MutationMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
   public String createOrUpdateSituationElement(
     @Argument String codespace,
     @Argument String authority,
