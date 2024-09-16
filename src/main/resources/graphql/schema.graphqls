@@ -261,6 +261,7 @@ input EstimatedVehicleJourneyInput {
     routeRef: String
     publishedLineName: String
     groupOfLinesRef: String
+    externalLineRef: String
     operatorRef: String
     monitored: Boolean
     dataSource: String
