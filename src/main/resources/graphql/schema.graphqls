@@ -7,7 +7,7 @@ type Query {
     userContext: UserContext
     situationElements(codespace: String!, authority: String!): [SituationElement]
     cancellations(codespace: String!, authority: String!): [Cancellation]
-    extrajourneys(codespace: String!, authority: String!): [Extrajourney]
+    extrajourneys(codespace: String!, authority: String!, showCompletedTrips: Boolean!): [Extrajourney]
 }
 
 type UserContext {

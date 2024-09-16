@@ -62,10 +62,11 @@ public class QueryController {
   @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
   public Collection<EstimatedVehicleJourneyEntity> extrajourneys(
     @Argument String codespace,
-    @Argument String authority
+    @Argument String authority,
+    @Argument Boolean showCompletedTrips
   ) {
     return estimatedVehicleJourneyRepository
-      .getExtrajourneysByCodespace(codespace, authority)
+      .getExtrajourneysByCodespace(codespace, authority, showCompletedTrips)
       .toList();
   }
 }

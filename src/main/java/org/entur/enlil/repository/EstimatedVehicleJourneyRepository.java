@@ -11,7 +11,8 @@ public interface EstimatedVehicleJourneyRepository {
   );
   Stream<EstimatedVehicleJourneyEntity> getExtrajourneysByCodespace(
     String codespace,
-    String authority
+    String authority,
+    Boolean showCompletedTrips
   );
   String createCancellation(
     String codespace,

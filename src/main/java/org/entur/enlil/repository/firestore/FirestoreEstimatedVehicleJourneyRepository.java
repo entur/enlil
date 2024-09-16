@@ -3,6 +3,7 @@ package org.entur.enlil.repository.firestore;
 import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Filter;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -62,14 +63,27 @@ public class FirestoreEstimatedVehicleJourneyRepository
   @Override
   public Stream<EstimatedVehicleJourneyEntity> getExtrajourneysByCodespace(
     String codespace,
-    String authority
+    String authority,
+    Boolean showCompletedTrips
   ) {
     try {
-      return firestore
-        .collection(
-          "codespaces/" + codespace + "/authorities/" + authority + "/extrajourneys"
-        )
-        .get()
+      var collectionRef = firestore.collection(
+        "codespaces/" + codespace + "/authorities/" + authority + "/extrajourneys"
+      );
+
+      Query query = null;
+
+      if (Boolean.FALSE.equals(showCompletedTrips)) {
+        query =
+          collectionRef.where(
+            Filter.greaterThan(
+              "EstimatedVehicleJourney.ExpiresAtEpochMs",
+              Instant.now(clock).toEpochMilli()
+            )
+          );
+      }
+
+      return (query != null ? query : collectionRef).get()
         .get(5, TimeUnit.SECONDS)
         .getDocuments()
         .stream()
