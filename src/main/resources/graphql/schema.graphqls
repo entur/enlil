@@ -6,6 +6,8 @@ schema {
 type Query {
     userContext: UserContext
     situationElements(codespace: String!, authority: String!): [SituationElement]
+    cancellations(codespace: String!, authority: String!): [Cancellation]
+    extrajourneys(codespace: String!, authority: String!, showCompletedTrips: Boolean!): [Extrajourney]
 }
 
 type UserContext {
@@ -16,6 +18,8 @@ type UserContext {
 
 type Mutation {
     createOrUpdateSituationElement(codespace: String!, authority: String!, input: SituationElementInput!): String
+    createOrUpdateCancellation(codespace: String!, authority: String!, input: CancellationInput!): String
+    createOrUpdateExtrajourney(codespace: String!, authority: String!, input: ExtrajourneyInput!): String
 }
 
 type SituationElement {
@@ -203,4 +207,107 @@ type FramedVehicleJourneyRef {
 input FramedVehicleJourneyRefInput {
     dataFrameRef: String
     datedVehicleJourneyRef: String
+}
+
+type Cancellation {
+    id: ID
+    estimatedVehicleJourney: EstimatedVehicleJourney
+}
+
+type Extrajourney {
+    id: ID
+    estimatedVehicleJourney: EstimatedVehicleJourney
+}
+
+input CancellationInput {
+    id: ID
+    estimatedVehicleJourney: EstimatedVehicleJourneyInput!
+}
+
+input ExtrajourneyInput {
+    id: ID
+    estimatedVehicleJourney: EstimatedVehicleJourneyInput!
+}
+
+type EstimatedVehicleJourney {
+    recordedAtTime: String
+    lineRef: String
+    directionRef: String
+    framedVehicleJourneyRef: FramedVehicleJourneyRef
+    cancellation: Boolean
+    estimatedVehicleJourneyCode: String
+    extraJourney: Boolean
+    vehicleMode: String
+    routeRef: String
+    publishedLineName: String
+    groupOfLinesRef: String
+    operatorRef: String
+    monitored: Boolean
+    dataSource: String
+    estimatedCalls: EstimatedCalls
+    isCompleteStopSequence: Boolean
+    expiresAtEpochMs: Float
+}
+
+input EstimatedVehicleJourneyInput {
+    recordedAtTime: String
+    lineRef: String
+    directionRef: String
+    framedVehicleJourneyRef: FramedVehicleJourneyRefInput
+    cancellation: Boolean
+    estimatedVehicleJourneyCode: String
+    extraJourney: Boolean
+    vehicleMode: String
+    routeRef: String
+    publishedLineName: String
+    groupOfLinesRef: String
+    externalLineRef: String
+    operatorRef: String
+    monitored: Boolean
+    dataSource: String
+    estimatedCalls: EstimatedCallsInput
+    isCompleteStopSequence: Boolean
+    expiresAtEpochMs: Float
+}
+
+type EstimatedCalls {
+    estimatedCall: [EstimatedCall]
+}
+
+input EstimatedCallsInput {
+    estimatedCall: [EstimatedCallInput]
+}
+
+type EstimatedCall {
+    stopPointRef: String
+    order: Int
+    stopPointName: String
+    cancellation: Boolean
+    requestStop: Boolean
+    destinationDisplay: String
+    aimedArrivalTime: String
+    expectedArrivalTime: String
+    aimedDepartureTime: String
+    expectedDepartureTime: String
+    arrivalStatus: String
+    arrivalBoardingActivity: String
+    departureStatus: String
+    departureBoardingActivity: String
+}
+
+input EstimatedCallInput {
+    stopPointRef: String
+    order: Int
+    stopPointName: String
+    cancellation: Boolean
+    requestStop: Boolean
+    destinationDisplay: String
+    aimedArrivalTime: String
+    expectedArrivalTime: String
+    aimedDepartureTime: String
+    expectedDepartureTime: String
+    arrivalStatus: String
+    arrivalBoardingActivity: String
+    departureStatus: String
+    departureBoardingActivity: String
 }

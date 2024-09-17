@@ -5,7 +5,17 @@ import java.util.List;
 
 public class EstimatedVehicleJourneyEntity {
 
+  private String id;
+
   private EstimatedVehicleJourney estimatedVehicleJourney;
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 
   @PropertyName("EstimatedVehicleJourney")
   public EstimatedVehicleJourney getEstimatedVehicleJourney() {
