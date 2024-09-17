@@ -267,7 +267,7 @@ input EstimatedVehicleJourneyInput {
     dataSource: String
     estimatedCalls: EstimatedCallsInput
     isCompleteStopSequence: Boolean
-    expiresAtEpochMs: Float # TODO move this into backend
+    expiresAtEpochMs: Float
 }
 
 type EstimatedCalls {
