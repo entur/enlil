@@ -27,12 +27,12 @@ public class DateMapper {
 
   public static ZonedDateTime mapISOStringToZonedDateTime(@Nonnull String date) {
     return ZonedDateTime.of(
-      LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME),
+      LocalDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME),
       ZoneOffset.UTC
     );
   }
 
   public static String mapZonedDateTimeToString(ZonedDateTime date) {
-    return date.format(DateTimeFormatter.ISO_DATE);
+    return date.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
   }
 }
