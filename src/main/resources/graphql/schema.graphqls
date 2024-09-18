@@ -13,7 +13,18 @@ type Query {
 type UserContext {
 
     # Codespaces that the current user has access to
-    allowedCodespaces: [String]
+    allowedCodespaces: [Codespace]
+}
+
+type Codespace {
+    id: String!
+    permissions: [Permission!]!
+}
+
+enum Permission {
+    MESSAGES,
+    CANCELLATIONS,
+    EXTRAJOURNEYS
 }
 
 type Mutation {

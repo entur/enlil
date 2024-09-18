@@ -1,11 +1,12 @@
 package org.entur.enlil.graphql;
 
 import java.util.Collection;
-import org.entur.enlil.graphql.model.UserContext;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.model.PtSituationElementEntity;
 import org.entur.enlil.repository.EstimatedVehicleJourneyRepository;
 import org.entur.enlil.repository.SituationElementRepository;
+import org.entur.enlil.security.model.Permission;
+import org.entur.enlil.security.model.UserContext;
 import org.entur.enlil.security.spi.UserContextService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -37,7 +38,7 @@ public class QueryController {
   }
 
   @QueryMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
+  @PreAuthorize("@userContextService.hasAccessToCodespaceForMessages(#codespace)")
   public Collection<PtSituationElementEntity> situationElements(
     @Argument String codespace,
     @Argument String authority
@@ -48,7 +49,7 @@ public class QueryController {
   }
 
   @QueryMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
+  @PreAuthorize("@userContextService.hasAccessToCodespaceForCancellations(#codespace)")
   public Collection<EstimatedVehicleJourneyEntity> cancellations(
     @Argument String codespace,
     @Argument String authority
@@ -59,7 +60,7 @@ public class QueryController {
   }
 
   @QueryMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
+  @PreAuthorize("@userContextService.hasAccessToCodespaceForExtrajourneys(#codespace)")
   public Collection<EstimatedVehicleJourneyEntity> extrajourneys(
     @Argument String codespace,
     @Argument String authority,

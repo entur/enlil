@@ -26,7 +26,7 @@ public class MutationController {
   }
 
   @MutationMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
+  @PreAuthorize("@userContextService.hasAccessToCodespaceForMessages(#codespace)")
   public String createOrUpdateSituationElement(
     @Argument String codespace,
     @Argument String authority,
@@ -48,7 +48,7 @@ public class MutationController {
   }
 
   @MutationMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
+  @PreAuthorize("@userContextService.hasAccessToCodespaceForCancellations(#codespace)")
   public String createOrUpdateCancellation(
     @Argument String codespace,
     @Argument String authority,
@@ -70,7 +70,7 @@ public class MutationController {
   }
 
   @MutationMapping
-  @PreAuthorize("@userContextService.hasAccessToCodespace(#codespace)")
+  @PreAuthorize("@userContextService.hasAccessToCodespaceForExtrajourneys(#codespace)")
   public String createOrUpdateExtrajourney(
     @Argument String codespace,
     @Argument String authority,
