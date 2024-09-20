@@ -159,18 +159,24 @@ public class FirestoreSituationElementRepository implements SituationElementRepo
           var codespaceDoc = transaction
             .get(firestore.document("codespaces/" + codespace))
             .get();
+
           int nextSituationNumber = 1;
           if (codespaceDoc.exists()) {
             nextSituationNumber =
               Objects.requireNonNull(
                 codespaceDoc.get("nextSituationNumber", Integer.class)
               );
-          }
 
-          transaction.update(
-            codespaceDoc.getReference(),
-            Map.of("nextSituationNumber", nextSituationNumber + 1)
-          );
+            transaction.update(
+              codespaceDoc.getReference(),
+              Map.of("nextSituationNumber", nextSituationNumber + 1)
+            );
+          } else {
+            transaction.create(
+              codespaceDoc.getReference(),
+              Map.of("nextSituationNumber", nextSituationNumber + 1)
+            );
+          }
 
           situationElement.setSituationNumber(
             codespace + ":SituationNumber:" + nextSituationNumber
