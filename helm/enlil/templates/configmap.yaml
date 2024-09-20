@@ -10,6 +10,7 @@ data:
     # Firestore
     spring.cloud.gcp.firestore.enabled=true
     spring.cloud.gcp.firestore.project-id={{ .Values.configMap.firestoreProjectId }}
+    spring.cloud.gcp.firestore.database-id=default
 
     # Management server
     management.server.port=9001
