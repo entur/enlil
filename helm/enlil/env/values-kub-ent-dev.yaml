@@ -3,7 +3,8 @@ common:
   ingress:
     host: enlil.dev.entur.io
 configMap:
-  firestoreProjectId: deviation-messages-dev
+  firestoreProjectId: ent-enlil-dev
+  firestoreDatabaseId: default
   auth0:
     ror:
       url: https://ror-entur-dev.eu.auth0.com/

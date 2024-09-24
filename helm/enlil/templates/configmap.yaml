@@ -10,6 +10,9 @@ data:
     # Firestore
     spring.cloud.gcp.firestore.enabled=true
     spring.cloud.gcp.firestore.project-id={{ .Values.configMap.firestoreProjectId }}
+    {{ if (.Values.configMap.firestoreDatabaseId) }}
+    spring.cloud.gcp.firestore.database-id={{ .Values.configMap.firestoreDatabaseId }}
+    {{ end }}
 
     # Management server
     management.server.port=9001
