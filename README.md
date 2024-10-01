@@ -6,9 +6,26 @@
 
 Backend application for a lightweight realtime deviation system.
 
-Connects to firestore database that belongs to nirgali (see above), to retrieve situation messages,
-cancellations and extra-journeys. These are mapped to SIRI-SX and SIRI-ET. A REST-endpoint (`/siri`) is exposed
-to request SIRI XML via HTTP POST:
+Consists of two parts:
+
+1. A GraphQL API for managing situation messages, cancellations and 
+extra-journeys
+2. A SIRI endpoint for requesting SIRI-SX or SIRI-ET versions of the same 
+data
+
+Data is stored in a Firestore database.
+
+## GraphQL
+
+A GraphQL API is available at `/graphl`, to be used by frontend application
+(nirgali). It allows authorized users to manage data within their assigned
+codespace / organisation.
+
+## SIRI
+
+Situation messages, cancellations and extra-journeys in the Firestore 
+database are mapped to SIRI-SX and SIRI-ET after retrieval. A REST-endpoint
+(`/siri`) is exposed to request SIRI XML via HTTP POST:
 
 Request for SIRI-SX (SituationExchangeRequest):
 
