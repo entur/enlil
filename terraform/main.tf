@@ -4,14 +4,6 @@ module "init" {
   environment = var.environment
 }
 
-// This controls access to the legacy firestore database, not the one defined below ("firestore_db")
-resource "google_project_iam_member" "firestore_access" {
-  project = var.firestore_project
-  role = "roles/datastore.user"
-  member = "serviceAccount:${module.init.service_accounts.default.email}"
-}
-
-
 resource "google_firestore_database" "firestore_db" {
   project                           = var.project
   name                              = "default"
