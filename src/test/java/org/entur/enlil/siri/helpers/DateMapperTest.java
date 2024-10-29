@@ -16,24 +16,24 @@ public class DateMapperTest {
     Mockito.when(clock.instant()).thenReturn(Instant.parse("2023-09-19T19:19:00Z"));
     Mockito.when(clock.getZone()).thenReturn(ZoneId.of("UTC"));
     Assertions.assertEquals(
-            "2023-09-19T19:19:00Z",
-            DateMapper.mapZonedDateTimeToString(ZonedDateTime.now(clock))
+      "2023-09-19T19:19:00Z",
+      DateMapper.mapZonedDateTimeToString(ZonedDateTime.now(clock))
     );
   }
 
   @Test
   void tstMapISOStringToZonedDateTime() {
     Assertions.assertEquals(
-            "2023-09-19T19:19:01Z",
-            DateMapper.mapISOStringToZonedDateTime("2023-09-19T19:19:01Z").toString()
+      "2023-09-19T19:19:01Z",
+      DateMapper.mapISOStringToZonedDateTime("2023-09-19T19:19:01Z").toString()
     );
     Assertions.assertEquals(
-            "2023-09-19T19:19:01Z",
-            DateMapper.mapISOStringToZonedDateTime("2023-09-19T20:19:01+01:00").toString()
+      "2023-09-19T19:19:01Z",
+      DateMapper.mapISOStringToZonedDateTime("2023-09-19T20:19:01+01:00").toString()
     );
     Assertions.assertEquals(
-            "2023-09-19T19:19:01Z",
-            DateMapper.mapISOStringToZonedDateTime("2023-09-19T21:19:01+02:00").toString()
+      "2023-09-19T19:19:01Z",
+      DateMapper.mapISOStringToZonedDateTime("2023-09-19T21:19:01+02:00").toString()
     );
   }
 }
