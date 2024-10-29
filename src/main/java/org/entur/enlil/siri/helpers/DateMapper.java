@@ -26,10 +26,9 @@ public class DateMapper {
   private DateMapper() {}
 
   public static ZonedDateTime mapISOStringToZonedDateTime(@Nonnull String date) {
-    return ZonedDateTime.of(
-      LocalDateTime.parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-      ZoneOffset.UTC
-    );
+    return ZonedDateTime
+      .parse(date, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+      .withZoneSameInstant(ZoneOffset.UTC);
   }
 
   public static String mapZonedDateTimeToString(ZonedDateTime date) {
