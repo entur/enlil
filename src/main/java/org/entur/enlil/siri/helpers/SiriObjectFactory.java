@@ -275,12 +275,17 @@ public class SiriObjectFactory {
     affectedLineStructure.setLineRef(lineRef);
 
     if (stopPointRefs != null) {
-      AffectedLineStructure.StopPoints stopPoints =
-        new AffectedLineStructure.StopPoints();
-      stopPoints.getAffectedStopPoints().addAll(stopPointRefs);
-      affectedLineStructure.setStopPoints(stopPoints);
+      AffectedLineStructure.Routes routes = new AffectedLineStructure.Routes();
+      AffectedRouteStructure affectedRouteStructure = new AffectedRouteStructure();
+      AffectedRouteStructure.StopPoints stopPoints =
+        new AffectedRouteStructure.StopPoints();
+      stopPoints
+        .getAffectedStopPointsAndLinkProjectionToNextStopPoints()
+        .addAll(stopPointRefs);
+      affectedRouteStructure.setStopPoints(stopPoints);
+      routes.getAffectedRoutes().add(affectedRouteStructure);
+      affectedLineStructure.setRoutes(routes);
     }
-
     affectedNetwork.getAffectedLines().add(affectedLineStructure);
 
     return affectedNetwork;
