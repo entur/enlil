@@ -43,7 +43,7 @@ jobs:
             -Dsonar.projectName=enlil \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${{ secrets.ENTUR_SONAR_PASSWORD }}
-      - uses: actions/upload-artifact@v4.4.3
+      - uses: actions/upload-artifact@v4.5.0
         with:
           path: target/*.jar
   docker-build:
