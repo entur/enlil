@@ -25,7 +25,7 @@
         <entur.helpers.version>2.34</entur.helpers.version>
 
         <spring-cloud-gcp-dependencies.version>5.11.3</spring-cloud-gcp-dependencies.version>
-        <testcontainers-bom.version>1.20.6</testcontainers-bom.version>
+        <testcontainers-bom.version>1.21.0</testcontainers-bom.version>
         <jakarta-xml-bind-api.version>4.0.2</jakarta-xml-bind-api.version>
         <jaxb-runtime.version>4.0.5</jaxb-runtime.version>
         <siri-java-model.version>1.28</siri-java-model.version>
