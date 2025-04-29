@@ -4,7 +4,3 @@ description: Backend for avvik.entur.org
 type: application
 version: 0.0.3
 appVersion: "0.0.1"
-dependencies:
-  - name: common
-    version: 1.18.2
-    repository: "https://entur.github.io/helm-charts"

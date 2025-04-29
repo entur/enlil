@@ -1,7 +1,6 @@
-common:
-  env: dev
-  ingress:
-    host: enlil.dev.entur.io
+env: dev
+ingress:
+  host: enlil.dev.entur.io
 configMap:
   firestoreProjectId: ent-enlil-dev
   firestoreDatabaseId: default

@@ -1,6 +1,5 @@
-common:
-  env: tst
-  ingress:
+env: tst
+ingress:
     host: enlil.staging.entur.io
 configMap:
   firestoreProjectId: ent-enlil-tst

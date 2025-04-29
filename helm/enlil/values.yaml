@@ -1,61 +1,29 @@
-common:
-  app: enlil
-  shortname: enlil
-  team: team-ror
-  ingress:
-    enabled: true
-    trafficType: api
-  service:
+deployment:
+  name: enlil
+service:
+  http:
+    externalPort: 80
     internalPort: 8080
-  deployment:
-    replicas: 1
-  container:
-    image: <+artifacts.primary.image>
-    cpu: 1
-    memory: 2000
-    prometheus:
-      enabled: true
-      path: /actuator/prometheus
-      port: 9001
-    volumeMounts:
-      - mountPath: /etc/application-config
-        name: application-config
-        readOnly: true
-    volumes:
-      - configMap:
-          defaultMode: 420
-          name: enlil-application
-        name: application-config
-    probes:
-      enabled: true
-      spec:
-        startupProbe:
-          httpGet:
-            path: /actuator/health/readiness
-            port: 9001
-          periodSeconds: 1
-          timeoutSeconds: 5
-          failureThreshold: 20
-        livenessProbe:
-          httpGet:
-            path: /actuator/health/liveness
-            port: 9001
-          initialDelaySeconds: 0
-          periodSeconds: 60
-          timeoutSeconds: 30
-          failureThreshold: 5
-        readinessProbe:
-          httpGet:
-            path: /actuator/health/readiness
-            port: 9001
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 10
-          failureThreshold: 6
-  configmap:
-    data:
-      JDK_JAVA_OPTIONS: -server -Xmx2048m -Xss1024m -Dspring.config.location=/etc/application-config/application.properties
-        -Dfile.encoding=UTF-8
-      TZ: Europe/Oslo
-    enabled: true
-    toEnv: true
+
+management:
+  port: 9001
+
+
+replicas: 1
+rollingUpdate:
+  maxSurge: 25%
+  maxUnavailable: 25%
+
+resources:
+  memLimit: "2400Mi"
+  cpuRequest: "1"
+  memRequest: "2000Mi"
+  xss: 1024m
+  xmx: 2048m
+
+configMapMount:
+  name: enlil-config
+
+image:
+  identifier: <+artifacts.primary.image>
+  imagePullPolicy: Always
