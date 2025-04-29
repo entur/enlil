@@ -1,6 +1,5 @@
-common:
-  env: prod
-  ingress:
+env: prod
+ingress:
     host: enlil.entur.io
 configMap:
   firestoreProjectId: ent-enlil-prd
