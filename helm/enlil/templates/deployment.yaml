@@ -79,7 +79,7 @@ spec:
             timeoutSeconds: 10
           startupProbe:
             tcpSocket:
-              port: {{ .Values.service.http.internalPort }}
+              port: {{ .Values.management.port }}
             failureThreshold: 20
             periodSeconds: 1
             timeoutSeconds: 5
