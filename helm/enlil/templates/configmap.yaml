@@ -35,6 +35,16 @@ data:
     enlil.oauth2.resourceserver.auth0.ror.jwt.issuer-uri={{ .Values.configMap.auth0.ror.url }}
     enlil.oauth2.resourceserver.auth0.ror.jwt.audience={{ .Values.configMap.auth0.ror.audience }}
 
+    # OAuth2 Entur Internal Client
+    spring.security.oauth2.client.registration.internal.authorization-grant-type=client_credentials
+    spring.security.oauth2.client.registration.internal.client-id={{ .Values.configMap.auth0.client.clientId }}
+    spring.security.oauth2.client.provider.internal.token-uri={{ .Values.configMap.auth0.client.tokenUri }}
+    ror.oauth2.client.audience={{ .Values.configMap.auth0.client.audience }}
+
+    # Authorization
+    enlil.security.role.assignment.extractor={{ .Values.configMap.roleAssignmentExtractor }}
+    user.permission.rest.service.url={{ .Values.configMap.baba.service }}/services/organisations/users
+
     # Beans and profiles
     spring.profiles.active=entur,scheduling
     spring.main.allow-bean-definition-overriding=true
