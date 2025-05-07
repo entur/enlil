@@ -78,8 +78,10 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 10
           startupProbe:
-            tcpSocket:
+            httpGet:
+              path: /actuator/health/readiness
               port: {{ .Values.management.port }}
+              scheme: HTTP
             failureThreshold: 20
             periodSeconds: 1
             timeoutSeconds: 5
