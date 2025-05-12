@@ -17,4 +17,4 @@ configMap:
   baba:
     service: http://baba.entur.internal
 
-  roleAssignmentExtractor: jwt
+  roleAssignmentExtractor: baba
