@@ -279,6 +279,10 @@ public class EstimatedVehicleJourneyEntity {
 
     private String departureBoardingActivity;
 
+    /**
+     * @deprecated PoC field for exploring Car Pooling.
+     */
+    @Deprecated
     private DepartureStopAssignment departureStopAssignment;
 
     @PropertyName("StopPointRef")
@@ -421,11 +425,21 @@ public class EstimatedVehicleJourneyEntity {
       this.departureBoardingActivity = departureBoardingActivity;
     }
 
+    /**
+     * @deprecated PoC field for exploring Car Pooling.
+     * @return null or the defined departure stop assignment.
+     */
+    @Deprecated
     @PropertyName("DepartureStopAssignment")
     public DepartureStopAssignment getDepartureStopAssignment() {
       return departureStopAssignment;
     }
 
+    /**
+     * @deprecated PoC field for exploring Car Pooling.
+     * @param departureStopAssignment
+     */
+    @Deprecated
     @PropertyName("DepartureStopAssignment")
     public void setDepartureStopAssignment(
       DepartureStopAssignment departureStopAssignment
