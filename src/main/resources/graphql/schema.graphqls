@@ -304,6 +304,7 @@ type EstimatedCall {
     arrivalBoardingActivity: String
     departureStatus: String
     departureBoardingActivity: String
+    departureStopAssignment: DepartureStopAssignment
 }
 
 input EstimatedCallInput {
@@ -321,4 +322,37 @@ input EstimatedCallInput {
     arrivalBoardingActivity: String
     departureStatus: String
     departureBoardingActivity: String
+    departureStopAssignment: DepartureStopAssignmentInput
+}
+
+type DepartureStopAssignment {
+    expectedFlexibleArea: ExpectedFlexibleArea
+}
+
+input DepartureStopAssignmentInput {
+    expectedFlexibleArea: ExpectedFlexibleAreaInput
+}
+
+type ExpectedFlexibleArea {
+    polygon: Polygon
+}
+
+input ExpectedFlexibleAreaInput {
+    polygon: PolygonInput
+}
+
+type Polygon {
+    exterior: LinearRing
+}
+
+input PolygonInput {
+    exterior: LinearRingInput
+}
+
+type LinearRing {
+    posList: String
+}
+
+input LinearRingInput {
+    posList: String
 }
