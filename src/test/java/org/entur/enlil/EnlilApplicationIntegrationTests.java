@@ -1,19 +1,12 @@
 package org.entur.enlil;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-
 import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.firestore.Firestore;
-import java.net.URI;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 import org.entur.enlil.configuration.MockedClockConfiguration;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.model.FramedVehicleJourneyRef;
@@ -23,16 +16,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureGraphQlTester;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.graphql.test.tester.GraphQlTester;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -44,15 +35,29 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import uk.org.siri.siri21.Siri;
 
+import java.net.URI;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVehicleJourneyProvider;
+
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = { EnlilApplication.class, MockedClockConfiguration.class }
+  classes = {EnlilApplication.class, MockedClockConfiguration.class}
 )
 @Testcontainers
+@AutoConfigureGraphQlTester
 @TestPropertySource("classpath:application-test.properties")
-@ExtendWith({ SnapshotExtension.class, MockitoExtension.class })
-@ActiveProfiles({ "test", "local-no-authentication" })
+@ExtendWith({SnapshotExtension.class, MockitoExtension.class})
+@ActiveProfiles({"test", "local-no-authentication"})
 class EnlilApplicationIntegrationTests {
 
   @LocalServerPort
@@ -60,6 +65,12 @@ class EnlilApplicationIntegrationTests {
 
   @Autowired
   Firestore firestore;
+
+  @Autowired
+  private GraphQlTester graphQlTester;
+
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Autowired
   Clock clock;
@@ -274,18 +285,18 @@ class EnlilApplicationIntegrationTests {
     headers.setContentType(MediaType.APPLICATION_XML);
     RequestEntity<String> requestEntity = new RequestEntity<>(
       """
-                          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                          <Siri version="2.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns:ns3="http://www.ifopt.org.uk/ifopt" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0">
-                            <ServiceRequest>
-                              <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
-                              <RequestorRef>ENTUR_DEV-1</RequestorRef>
-                              <EstimatedTimetableRequest version="2.0">
-                                <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
-                                <MessageIdentifier>e11d9efb-ee7b-4a67-847a-a254e813f0da</MessageIdentifier>
-                              </EstimatedTimetableRequest>
-                            </ServiceRequest>
-                          </Siri>
-                          """,
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <Siri version="2.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns:ns3="http://www.ifopt.org.uk/ifopt" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0">
+          <ServiceRequest>
+            <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
+            <RequestorRef>ENTUR_DEV-1</RequestorRef>
+            <EstimatedTimetableRequest version="2.0">
+              <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
+              <MessageIdentifier>e11d9efb-ee7b-4a67-847a-a254e813f0da</MessageIdentifier>
+            </EstimatedTimetableRequest>
+          </ServiceRequest>
+        </Siri>
+        """,
       headers,
       HttpMethod.POST,
       URI.create("http://localhost:" + randomPort + "/siri"),
@@ -341,5 +352,21 @@ class EnlilApplicationIntegrationTests {
     call2.setArrivalBoardingActivity("alighting");
     estimatedCalls.setEstimatedCall(List.of(call1, call2));
     return estimatedCalls;
+  }
+
+  @Test
+  void testCreateOrUpdateExtrajourney() {
+    var input = estimatedVehicleJourneyProvider().nextForCarPooling(clock);
+    var inputMap = objectMapper.<Map<String, Object>>convertValue(Map.of("estimatedVehicleJourney", input), new TypeReference<>() {});
+
+    // Execute mutation
+    graphQlTester.documentName("create-extrajourney")
+      .variable("codespace", "ENT")  // Replace with actual value
+      .variable("authority", "ENT:Authority:ENT")  // Replace with actual value
+      .variable("input",  inputMap)
+      .execute()
+      .path("data.createOrUpdateExtrajourney")
+      .entity(String.class)
+      .satisfies(createdIdValue -> assertThat(createdIdValue).isNotBlank());
   }
 }
