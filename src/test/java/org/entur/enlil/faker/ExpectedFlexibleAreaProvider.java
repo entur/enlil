@@ -20,6 +20,22 @@ public class ExpectedFlexibleAreaProvider extends AbstractProvider<BaseProviders
     );
   }
 
+  public EstimatedVehicleJourneyEntity.ExpectedFlexibleArea fixedDepartureArea() {
+    var expoectedFlexibleArea = new EstimatedVehicleJourneyEntity.ExpectedFlexibleArea();
+
+    expoectedFlexibleArea.setPolygon(polygonProvider().fixedDeparturePolygon());
+
+    return expoectedFlexibleArea;
+  }
+
+  public EstimatedVehicleJourneyEntity.ExpectedFlexibleArea fixedArrivalArea() {
+    var expoectedFlexibleArea = new EstimatedVehicleJourneyEntity.ExpectedFlexibleArea();
+
+    expoectedFlexibleArea.setPolygon(polygonProvider().fixedArrivalPolygon());
+
+    return expoectedFlexibleArea;
+  }
+
   public EstimatedVehicleJourneyEntity.ExpectedFlexibleArea next() {
     var expoectedFlexibleArea = new EstimatedVehicleJourneyEntity.ExpectedFlexibleArea();
 

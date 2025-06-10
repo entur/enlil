@@ -2,6 +2,7 @@ package org.entur.enlil;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.entur.enlil.faker.EstimatedVehicleJourneyEntityProvider.estimatedVehicleJourneyEntityProvider;
 import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVehicleJourneyProvider;
 
 import au.com.origin.snapshots.Expect;
@@ -41,6 +42,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.FirestoreEmulatorContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -99,6 +101,19 @@ class EnlilApplicationIntegrationTests {
     CredentialsProvider googleCredentials() {
       return NoCredentialsProvider.create();
     }
+  }
+
+  public void clearFirestoreEmulator() {
+    var emulatorPort = firestoreEmulator.getMappedPort(8080);
+
+    System.out.println(firestoreEmulator.getExposedPorts());
+    var projectId = "unused";
+
+    var url = String.format(
+      "http://localhost:%d/projects/%s/databases/(default)/documents",
+      emulatorPort, projectId
+    );
+    new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
   }
 
   @Test
@@ -371,5 +386,45 @@ class EnlilApplicationIntegrationTests {
       .path("data.createOrUpdateExtrajourney")
       .entity(String.class)
       .satisfies(createdIdValue -> assertThat(createdIdValue).isNotBlank());
+  }
+
+  @Test
+  void testEstimatedTimetableRequestWithCarPooling() throws ExecutionException, InterruptedException {
+    //clearFirestoreEmulator(); // TODO: Clear firestore between tests
+
+    firestore
+      .collection("codespaces/TST/authorities/TST:Authority:TST/extrajourneys")
+      //.collection("codespaces/CAR/authorities/CAR:Authority:CAR/extrajourneys")
+      .add(estimatedVehicleJourneyEntityProvider().fixedCarPoolingVehicleJourney(clock))
+      .get();
+
+    var restTemplate = new TestRestTemplate();
+
+    var headers = new HttpHeaders();
+    headers.setAccept(List.of(MediaType.APPLICATION_XML));
+    headers.setContentType(MediaType.APPLICATION_XML);
+    var requestEntity = new RequestEntity<>(
+      """
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <Siri version="2.0" xmlns="http://www.siri.org.uk/siri" xmlns:ns2="http://www.ifopt.org.uk/acsb" xmlns:ns3="http://www.ifopt.org.uk/ifopt" xmlns:ns4="http://datex2.eu/schema/2_0RC1/2_0">
+          <ServiceRequest>
+            <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
+            <RequestorRef>ENTUR_DEV-1</RequestorRef>
+            <EstimatedTimetableRequest version="2.0">
+              <RequestTimestamp>2019-11-06T14:45:00+01:00</RequestTimestamp>
+              <MessageIdentifier>e11d9efb-ee7b-4a67-847a-a254e813f0da-sdas</MessageIdentifier>
+            </EstimatedTimetableRequest>
+          </ServiceRequest>
+        </Siri>
+        """,
+      headers,
+      HttpMethod.POST,
+      URI.create("http://localhost:" + randomPort + "/siri"),
+      Siri.class
+    );
+
+    var response = restTemplate.exchange(requestEntity, String.class);
+
+    expect.toMatchSnapshot(response.getBody());
   }
 }

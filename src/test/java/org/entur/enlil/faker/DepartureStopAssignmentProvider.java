@@ -20,6 +20,28 @@ public class DepartureStopAssignmentProvider extends AbstractProvider<BaseProvid
     );
   }
 
+  public EstimatedVehicleJourneyEntity.DepartureStopAssignment fixedDepartureStop() {
+    var departureStopAssignment =
+      new EstimatedVehicleJourneyEntity.DepartureStopAssignment();
+
+    departureStopAssignment.setExpectedFlexibleArea(
+      expectedFlexibleAreaProvider().fixedDepartureArea()
+    );
+
+    return departureStopAssignment;
+  }
+
+  public EstimatedVehicleJourneyEntity.DepartureStopAssignment fixedArrivalStop() {
+    var departureStopAssignment =
+      new EstimatedVehicleJourneyEntity.DepartureStopAssignment();
+
+    departureStopAssignment.setExpectedFlexibleArea(
+      expectedFlexibleAreaProvider().fixedArrivalArea()
+    );
+
+    return departureStopAssignment;
+  }
+
   public EstimatedVehicleJourneyEntity.DepartureStopAssignment next() {
     var departureStopAssignment =
       new EstimatedVehicleJourneyEntity.DepartureStopAssignment();
