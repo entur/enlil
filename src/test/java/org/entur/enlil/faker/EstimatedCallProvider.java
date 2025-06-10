@@ -1,11 +1,11 @@
 package org.entur.enlil.faker;
 
+import static org.entur.enlil.faker.DepartureStopAssignmentProvider.departureStopAssignmentProvider;
+import static org.entur.enlil.faker.EnlilFaker.ENLIL_FAKER;
+
 import net.datafaker.providers.base.AbstractProvider;
 import net.datafaker.providers.base.BaseProviders;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
-
-import static org.entur.enlil.faker.DepartureStopAssignmentProvider.departureStopAssignmentProvider;
-import static org.entur.enlil.faker.EnlilFaker.ENLIL_FAKER;
 
 public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
 
@@ -14,10 +14,13 @@ public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
   }
 
   public static EstimatedCallProvider estimatedCallProvider() {
-    return ENLIL_FAKER.getProvider(EstimatedCallProvider.class, EstimatedCallProvider::new);
+    return ENLIL_FAKER.getProvider(
+      EstimatedCallProvider.class,
+      EstimatedCallProvider::new
+    );
   }
 
-  @SuppressWarnings({"deprecation"})
+  @SuppressWarnings({ "deprecation" })
   public EstimatedVehicleJourneyEntity.EstimatedCall nextDepartureForCarPooling() {
     var estmatedCall = new EstimatedVehicleJourneyEntity.EstimatedCall();
 
@@ -33,7 +36,7 @@ public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
     return estmatedCall;
   }
 
-  @SuppressWarnings({"deprecation"})
+  @SuppressWarnings({ "deprecation" })
   public EstimatedVehicleJourneyEntity.EstimatedCall nextArrivalForCarPooling() {
     var estmatedCall = new EstimatedVehicleJourneyEntity.EstimatedCall();
 

@@ -1,5 +1,9 @@
 package org.entur.enlil;
 
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVehicleJourneyProvider;
+
 import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -7,6 +11,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.firestore.Firestore;
+import java.net.URI;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import org.entur.enlil.configuration.MockedClockConfiguration;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.model.FramedVehicleJourneyRef;
@@ -35,29 +47,16 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import uk.org.siri.siri21.Siri;
 
-import java.net.URI;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVehicleJourneyProvider;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-  classes = {EnlilApplication.class, MockedClockConfiguration.class}
+  classes = { EnlilApplication.class, MockedClockConfiguration.class }
 )
 @Testcontainers
 @AutoConfigureGraphQlTester
 @TestPropertySource("classpath:application-test.properties")
-@ExtendWith({SnapshotExtension.class, MockitoExtension.class})
-@ActiveProfiles({"test", "local-no-authentication"})
+@ExtendWith({ SnapshotExtension.class, MockitoExtension.class })
+@ActiveProfiles({ "test", "local-no-authentication" })
 class EnlilApplicationIntegrationTests {
 
   @LocalServerPort
@@ -357,13 +356,17 @@ class EnlilApplicationIntegrationTests {
   @Test
   void testCreateOrUpdateExtrajourney() {
     var input = estimatedVehicleJourneyProvider().nextForCarPooling(clock);
-    var inputMap = objectMapper.<Map<String, Object>>convertValue(Map.of("estimatedVehicleJourney", input), new TypeReference<>() {});
+    var inputMap = objectMapper.<Map<String, Object>>convertValue(
+      Map.of("estimatedVehicleJourney", input),
+      new TypeReference<>() {}
+    );
 
     // Execute mutation
-    graphQlTester.documentName("create-extrajourney")
-      .variable("codespace", "ENT")  // Replace with actual value
-      .variable("authority", "ENT:Authority:ENT")  // Replace with actual value
-      .variable("input",  inputMap)
+    graphQlTester
+      .documentName("create-extrajourney")
+      .variable("codespace", "ENT") // Replace with actual value
+      .variable("authority", "ENT:Authority:ENT") // Replace with actual value
+      .variable("input", inputMap)
       .execute()
       .path("data.createOrUpdateExtrajourney")
       .entity(String.class)
