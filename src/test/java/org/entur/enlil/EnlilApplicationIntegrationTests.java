@@ -25,6 +25,7 @@ import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.model.FramedVehicleJourneyRef;
 import org.entur.enlil.model.PtSituationElementEntity;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -103,17 +104,9 @@ class EnlilApplicationIntegrationTests {
     }
   }
 
-  public void clearFirestoreEmulator() {
-    var emulatorPort = firestoreEmulator.getMappedPort(8080);
-
-    System.out.println(firestoreEmulator.getExposedPorts());
-    var projectId = "unused";
-
-    var url = String.format(
-      "http://localhost:%d/projects/%s/databases/(default)/documents",
-      emulatorPort, projectId
-    );
-    new RestTemplate().exchange(url, HttpMethod.DELETE, null, String.class);
+  @AfterEach
+  void clearFirestoreEmulator() {
+    firestore.recursiveDelete(firestore.collection("codespaces"));
   }
 
   @Test
@@ -389,12 +382,10 @@ class EnlilApplicationIntegrationTests {
   }
 
   @Test
-  void testEstimatedTimetableRequestWithCarPooling() throws ExecutionException, InterruptedException {
-    //clearFirestoreEmulator(); // TODO: Clear firestore between tests
-
+  void testEstimatedTimetableRequestWithCarPooling()
+    throws ExecutionException, InterruptedException {
     firestore
       .collection("codespaces/TST/authorities/TST:Authority:TST/extrajourneys")
-      //.collection("codespaces/CAR/authorities/CAR:Authority:CAR/extrajourneys")
       .add(estimatedVehicleJourneyEntityProvider().fixedCarPoolingVehicleJourney(clock))
       .get();
 

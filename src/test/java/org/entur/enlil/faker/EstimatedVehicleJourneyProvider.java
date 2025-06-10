@@ -64,11 +64,13 @@ public class EstimatedVehicleJourneyProvider extends AbstractProvider<BaseProvid
     return estimatedVehicleJourney;
   }
 
-  public EstimatedVehicleJourneyEntity.EstimatedVehicleJourney fixedForCarPooling(Clock clock) {
+  public EstimatedVehicleJourneyEntity.EstimatedVehicleJourney fixedForCarPooling(
+    Clock clock
+  ) {
     var estimatedVehicleJourney =
       new EstimatedVehicleJourneyEntity.EstimatedVehicleJourney();
 
-    estimatedVehicleJourney.setRecordedAtTime(ISO_INSTANT.format(now()));
+    estimatedVehicleJourney.setRecordedAtTime(ISO_INSTANT.format(now(clock)));
     estimatedVehicleJourney.setLineRef("TST:Line:2");
     estimatedVehicleJourney.setDirectionRef("0");
     estimatedVehicleJourney.setEstimatedVehicleJourneyCode("TST:ServiceJourney:2");

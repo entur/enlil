@@ -5,11 +5,10 @@ import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 import static org.entur.enlil.faker.DepartureStopAssignmentProvider.departureStopAssignmentProvider;
 import static org.entur.enlil.faker.EnlilFaker.ENLIL_FAKER;
 
+import java.time.Clock;
 import net.datafaker.providers.base.AbstractProvider;
 import net.datafaker.providers.base.BaseProviders;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
-
-import java.time.Clock;
 
 public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
 
@@ -25,9 +24,12 @@ public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
   }
 
   @SuppressWarnings({ "deprecation" })
-  public EstimatedVehicleJourneyEntity.EstimatedCall fixedDepartureForCarPooling(Clock clock) {
+  public EstimatedVehicleJourneyEntity.EstimatedCall fixedDepartureForCarPooling(
+    Clock clock
+  ) {
     var estmatedCall = new EstimatedVehicleJourneyEntity.EstimatedCall();
 
+    estmatedCall.setStopPointRef("TST:Quay:1");
     estmatedCall.setStopPointName("Oslo");
     estmatedCall.setOrder(1);
     estmatedCall.setDestinationDisplay("Drammen Roklubb");
@@ -35,15 +37,20 @@ public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
     estmatedCall.setAimedDepartureTime(departureTime);
     estmatedCall.setExpectedDepartureTime(departureTime);
     estmatedCall.setDepartureBoardingActivity("boarding");
-    estmatedCall.setDepartureStopAssignment(departureStopAssignmentProvider().fixedDepartureStop());
+    estmatedCall.setDepartureStopAssignment(
+      departureStopAssignmentProvider().fixedDepartureStop()
+    );
 
     return estmatedCall;
   }
 
   @SuppressWarnings({ "deprecation" })
-  public EstimatedVehicleJourneyEntity.EstimatedCall fixedArrivalForCarPooling(Clock clock) {
+  public EstimatedVehicleJourneyEntity.EstimatedCall fixedArrivalForCarPooling(
+    Clock clock
+  ) {
     var estmatedCall = new EstimatedVehicleJourneyEntity.EstimatedCall();
 
+    estmatedCall.setStopPointRef("TST:Quay:2");
     estmatedCall.setStopPointName("Drammen");
     estmatedCall.setOrder(2);
     estmatedCall.setDestinationDisplay("Høyenhall");
@@ -51,7 +58,9 @@ public class EstimatedCallProvider extends AbstractProvider<BaseProviders> {
     estmatedCall.setAimedArrivalTime(arrivalTime);
     estmatedCall.setExpectedArrivalTime(arrivalTime);
     estmatedCall.setArrivalBoardingActivity("alighting");
-    estmatedCall.setDepartureStopAssignment(departureStopAssignmentProvider().fixedArrivalStop());
+    estmatedCall.setDepartureStopAssignment(
+      departureStopAssignmentProvider().fixedArrivalStop()
+    );
 
     return estmatedCall;
   }

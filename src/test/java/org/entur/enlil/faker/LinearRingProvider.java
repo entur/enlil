@@ -5,7 +5,6 @@ import static org.entur.enlil.faker.EnlilFaker.ENLIL_FAKER;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import net.datafaker.providers.base.AbstractProvider;
 import net.datafaker.providers.base.BaseProviders;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +23,8 @@ public class LinearRingProvider extends AbstractProvider<BaseProviders> {
   public EstimatedVehicleJourneyEntity.LinearRing fixedHoyenhall() {
     var linearRing = new EstimatedVehicleJourneyEntity.LinearRing();
 
-    linearRing.setPosList("""
+    linearRing.setPosList(
+      """
       							10.813701152801514 59.90490269568961
       							10.813824534416199 59.905002222436366
       							10.818298459053041 59.90387782183805
@@ -33,7 +33,8 @@ public class LinearRingProvider extends AbstractProvider<BaseProviders> {
       							10.818480849266054 59.903821331808345
       							10.818260908126833 59.903805191782205
       							10.813701152801514 59.90490269568961\
-      """);
+      """
+    );
 
     return linearRing;
   }
@@ -41,7 +42,8 @@ public class LinearRingProvider extends AbstractProvider<BaseProviders> {
   public EstimatedVehicleJourneyEntity.LinearRing fixedDrammenRoklubb() {
     var linearRing = new EstimatedVehicleJourneyEntity.LinearRing();
 
-    linearRing.setPosList("""
+    linearRing.setPosList(
+      """
       							10.198048353195192 59.744999037838035
       							10.197742581367494 59.744653070138405
       						  10.197254419326784 59.74476388830704
@@ -54,7 +56,8 @@ public class LinearRingProvider extends AbstractProvider<BaseProviders> {
       						  10.198627710342409 59.74456928054744
       						  10.19883155822754 59.74479902569844
       						  10.198048353195192 59.744999037838035\
-      """);
+      """
+    );
 
     return linearRing;
   }
@@ -67,7 +70,7 @@ public class LinearRingProvider extends AbstractProvider<BaseProviders> {
   public EstimatedVehicleJourneyEntity.LinearRing next() {
     var linearRing = new EstimatedVehicleJourneyEntity.LinearRing();
 
-    var startStop = new String[]{faker.address().latLon(" ")};
+    var startStop = new String[] { faker.address().latLon(" ") };
 
     int size = faker.random().nextInt(1, 3);
     var middle = IntStream

@@ -1,16 +1,15 @@
 package org.entur.enlil.faker;
 
+import static org.entur.enlil.faker.EnlilFaker.ENLIL_FAKER;
+import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVehicleJourneyProvider;
+
+import java.time.Clock;
 import net.datafaker.providers.base.AbstractProvider;
 import net.datafaker.providers.base.BaseProviders;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 
-import java.time.Clock;
-
-import static org.entur.enlil.faker.EnlilFaker.ENLIL_FAKER;
-import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVehicleJourneyProvider;
-
-
-public class EstimatedVehicleJourneyEntityProvider extends AbstractProvider<BaseProviders> {
+public class EstimatedVehicleJourneyEntityProvider
+  extends AbstractProvider<BaseProviders> {
 
   public EstimatedVehicleJourneyEntityProvider(BaseProviders faker) {
     super(faker);
@@ -19,13 +18,16 @@ public class EstimatedVehicleJourneyEntityProvider extends AbstractProvider<Base
   public static EstimatedVehicleJourneyEntityProvider estimatedVehicleJourneyEntityProvider() {
     return ENLIL_FAKER.getProvider(
       EstimatedVehicleJourneyEntityProvider.class,
-      EstimatedVehicleJourneyEntityProvider::new);
+      EstimatedVehicleJourneyEntityProvider::new
+    );
   }
 
   public EstimatedVehicleJourneyEntity fixedCarPoolingVehicleJourney(Clock clock) {
     var estimatedVehicleJourney = new EstimatedVehicleJourneyEntity();
 
-    estimatedVehicleJourney.setEstimatedVehicleJourney(estimatedVehicleJourneyProvider().fixedForCarPooling(clock));
+    estimatedVehicleJourney.setEstimatedVehicleJourney(
+      estimatedVehicleJourneyProvider().fixedForCarPooling(clock)
+    );
 
     return estimatedVehicleJourney;
   }
