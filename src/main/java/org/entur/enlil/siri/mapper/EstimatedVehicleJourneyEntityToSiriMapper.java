@@ -260,7 +260,8 @@ public class EstimatedVehicleJourneyEntityToSiriMapper {
   ) {
     var exterior = new AbstractRingPropertyType();
 
-    var pos = StringUtils.split(linearRing.getPosList(), " \n");
+    var sanitized = linearRing.getPosList().replaceAll("[^ 0-9.\\-\\n]", "");
+    var pos = StringUtils.split(sanitized, " \n");
     var coordinates = Stream.of(pos).map(Double::parseDouble).toList();
     var posList = new PosList();
     posList.getValues().addAll(coordinates);

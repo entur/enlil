@@ -85,7 +85,7 @@ public class EstimatedVehicleJourneyProvider extends AbstractProvider<BaseProvid
     estimatedCalls.setEstimatedCall(
       List.of(
         estimatedCallProvider().fixedDepartureForCarPooling(clock),
-        estimatedCallProvider().fixedDepartureForCarPooling(clock)
+        estimatedCallProvider().fixedArrivalForCarPooling(clock)
       )
     );
     estimatedVehicleJourney.setEstimatedCalls(estimatedCalls);
