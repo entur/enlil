@@ -87,7 +87,7 @@ public class EnturSecurityConfiguration {
   @Bean
   public UserInfoExtractor babaUserInfoExtractor(
     @Qualifier("internalWebClient") WebClient webClient,
-    @Value("${entur.permission.rest.service.url}") String url
+    @Value("${user.permission.rest.service.url}") String url
   ) {
     return new RemoteBabaUserInfoExtractor(webClient, url);
   }
