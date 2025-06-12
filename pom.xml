@@ -25,6 +25,7 @@
         <entur.helpers.version>5.14</entur.helpers.version>
 
         <spring-cloud-gcp-dependencies.version>5.12.1</spring-cloud-gcp-dependencies.version>
+        <net.datafaker.version>2.4.2</net.datafaker.version>
         <testcontainers-bom.version>1.21.1</testcontainers-bom.version>
         <jakarta-xml-bind-api.version>4.0.2</jakarta-xml-bind-api.version>
         <jaxb-runtime.version>4.0.5</jaxb-runtime.version>
@@ -167,10 +168,22 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.springframework.graphql</groupId>
+            <artifactId>spring-graphql-test</artifactId>
+            <version>1.4.0</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>${net.datafaker.version}</version>
             <scope>test</scope>
         </dependency>
 

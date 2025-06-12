@@ -3,15 +3,14 @@ package org.entur.enlil.siri.mapper;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
+import net.opengis.gml._3.*;
+import net.opengis.gml._3.ObjectFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.siri.helpers.DateMapper;
 import org.entur.enlil.siri.helpers.SiriObjectFactory;
-import uk.org.siri.siri21.ArrivalBoardingActivityEnumeration;
-import uk.org.siri.siri21.CallStatusEnumeration;
-import uk.org.siri.siri21.DepartureBoardingActivityEnumeration;
-import uk.org.siri.siri21.EstimatedCall;
-import uk.org.siri.siri21.EstimatedVehicleJourney;
-import uk.org.siri.siri21.VehicleModesEnumeration;
+import uk.org.siri.siri21.*;
 
 public class EstimatedVehicleJourneyEntityToSiriMapper {
 
@@ -207,6 +206,72 @@ public class EstimatedVehicleJourneyEntityToSiriMapper {
         )
       );
 
+    Optional
+      .ofNullable(estimatedCall.getDepartureStopAssignment())
+      .ifPresent(departureStopAssignment ->
+        mapped
+          .getDepartureStopAssignments()
+          .add(mapDepartureStopAssignment(departureStopAssignment))
+      );
+
     return mapped;
+  }
+
+  private static StopAssignmentStructure mapDepartureStopAssignment(
+    EstimatedVehicleJourneyEntity.DepartureStopAssignment departureStopAssignment
+  ) {
+    var departureStopAssignments = new StopAssignmentStructure();
+
+    Optional
+      .ofNullable(departureStopAssignment.getExpectedFlexibleArea())
+      .ifPresent(expectedFlexibleArea ->
+        departureStopAssignments.setExpectedFlexibleArea(
+          mapExpectedFlexibleArea(expectedFlexibleArea)
+        )
+      );
+
+    return departureStopAssignments;
+  }
+
+  private static AimedFlexibleArea mapExpectedFlexibleArea(
+    EstimatedVehicleJourneyEntity.ExpectedFlexibleArea expectedFlexibleArea
+  ) {
+    var flexibleArea = new AimedFlexibleArea();
+
+    Optional
+      .ofNullable(expectedFlexibleArea.getPolygon())
+      .ifPresent(polygon -> flexibleArea.setPolygon(mapPolygon(polygon)));
+
+    return flexibleArea;
+  }
+
+  private static PolygonType mapPolygon(EstimatedVehicleJourneyEntity.Polygon polygon) {
+    var gmlPolygon = new PolygonType();
+
+    Optional
+      .ofNullable(polygon.getExterior())
+      .ifPresent(exterior -> gmlPolygon.setExterior(mapExterior(exterior)));
+
+    return gmlPolygon;
+  }
+
+  private static AbstractRingPropertyType mapExterior(
+    EstimatedVehicleJourneyEntity.LinearRing linearRing
+  ) {
+    var exterior = new AbstractRingPropertyType();
+
+    var sanitized = linearRing.getPosList().replaceAll("[^ 0-9.\\-\\n]", "");
+    var pos = StringUtils.split(sanitized, " \n");
+    var coordinates = Stream.of(pos).map(Double::parseDouble).toList();
+    var posList = new PosList();
+    posList.getValues().addAll(coordinates);
+
+    var ring = new LinearRingType();
+    ring.setPosList(posList);
+
+    var gmlFactory = new ObjectFactory();
+    exterior.setAbstractRing(gmlFactory.createLinearRing(ring));
+
+    return exterior;
   }
 }

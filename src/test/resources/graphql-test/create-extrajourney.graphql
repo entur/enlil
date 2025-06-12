@@ -1,0 +1,11 @@
+mutation CreateOrUpdateExtrajourney(
+    $codespace: String!,
+    $authority: String!,
+    $input: ExtrajourneyInput!
+) {
+    createOrUpdateExtrajourney(
+        codespace: $codespace,
+        authority: $authority,
+        input: $input
+    )
+}

@@ -279,6 +279,12 @@ public class EstimatedVehicleJourneyEntity {
 
     private String departureBoardingActivity;
 
+    /**
+     * @deprecated PoC field for exploring Car Pooling.
+     */
+    @Deprecated
+    private DepartureStopAssignment departureStopAssignment;
+
     @PropertyName("StopPointRef")
     public String getStopPointRef() {
       return stopPointRef;
@@ -417,6 +423,88 @@ public class EstimatedVehicleJourneyEntity {
     @PropertyName("DepartureBoardingActivity")
     public void setDepartureBoardingActivity(String departureBoardingActivity) {
       this.departureBoardingActivity = departureBoardingActivity;
+    }
+
+    /**
+     * @deprecated PoC field for exploring Car Pooling.
+     * @return null or the defined departure stop assignment.
+     */
+    @Deprecated
+    @PropertyName("DepartureStopAssignment")
+    public DepartureStopAssignment getDepartureStopAssignment() {
+      return departureStopAssignment;
+    }
+
+    /**
+     * @deprecated PoC field for exploring Car Pooling.
+     * @param departureStopAssignment
+     */
+    @Deprecated
+    @PropertyName("DepartureStopAssignment")
+    public void setDepartureStopAssignment(
+      DepartureStopAssignment departureStopAssignment
+    ) {
+      this.departureStopAssignment = departureStopAssignment;
+    }
+  }
+
+  public static class DepartureStopAssignment {
+
+    private ExpectedFlexibleArea expectedFlexibleArea;
+
+    @PropertyName("ExpectedFlexibleArea")
+    public ExpectedFlexibleArea getExpectedFlexibleArea() {
+      return expectedFlexibleArea;
+    }
+
+    @PropertyName("ExpectedFlexibleArea")
+    public void setExpectedFlexibleArea(ExpectedFlexibleArea expectedFlexibleArea) {
+      this.expectedFlexibleArea = expectedFlexibleArea;
+    }
+  }
+
+  public static class ExpectedFlexibleArea {
+
+    private Polygon polygon;
+
+    @PropertyName("Polygon")
+    public Polygon getPolygon() {
+      return polygon;
+    }
+
+    @PropertyName("Polygon")
+    public void setPolygon(Polygon polygon) {
+      this.polygon = polygon;
+    }
+  }
+
+  public static class Polygon {
+
+    private LinearRing exterior;
+
+    @PropertyName("Exterior")
+    public LinearRing getExterior() {
+      return exterior;
+    }
+
+    @PropertyName("Exterior")
+    public void setExterior(LinearRing exterior) {
+      this.exterior = exterior;
+    }
+  }
+
+  public static class LinearRing {
+
+    private String posList;
+
+    @PropertyName("PosList")
+    public String getPosList() {
+      return posList;
+    }
+
+    @PropertyName("PosList")
+    public void setPosList(String posList) {
+      this.posList = posList;
     }
   }
 }
