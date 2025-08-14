@@ -11,7 +11,6 @@ import java.util.function.Function;
 import org.entur.enlil.security.model.Codespace;
 import org.entur.enlil.security.model.Permission;
 import org.entur.enlil.security.spi.EnlilAuthorizationService;
-import org.rutebanken.helper.organisation.RoleAssignment;
 import org.rutebanken.helper.organisation.RoleAssignmentExtractor;
 import org.rutebanken.helper.organisation.authorization.DefaultAuthorizationService;
 
@@ -19,8 +18,18 @@ public class DefaultEnlilAuthorizationService<T>
   extends DefaultAuthorizationService<T>
   implements EnlilAuthorizationService<T> {
 
-  public static final String ROLE_EDIT_SX = "editSX";
-  public static final String ROLE_EDIT_EXTRAJOURNEYS = "editExtraJourneys";
+  private static final String ROLE_ADMIN_DEVIATIONS = "adminDeviations";
+  private static final String ROLE_EDIT_DEVIATIONS = "editDeviations";
+  private static final String TYPE_OF_ENTITY_DEVIATION_TYPE = "DeviationType";
+  private static final String TYPE_OF_ENTITY_DEVIATION_MESSAGE = "DeviationMessage";
+  private static final String TYPE_OF_ENTITY_DEVIATION_CANCELLATION = "Cancellation";
+  private static final String TYPE_OF_ENTITY_DEVIATION_EXTRA_JOURNEY = "ExtraJourney";
+  private static final List<Permission> ALL_PERMISSIONS = List.of(
+    Permission.MESSAGES,
+    Permission.CANCELLATIONS,
+    Permission.EXTRAJOURNEYS
+  );
+
   private final Function<T, String> getProviderOrganisationById;
   private final RoleAssignmentExtractor roleAssignmentExtractor;
 
@@ -43,17 +52,21 @@ public class DefaultEnlilAuthorizationService<T>
 
   @Override
   public List<Codespace> getAllowedCodespaces() {
-    Map<String, Set<String>> codespaceMap = new HashMap<>();
+    if (isAdministrator()) {
+      return List.of(new Codespace("*", ALL_PERMISSIONS));
+    }
+
+    Map<String, Set<Map<String, List<String>>>> codespaceMap = new HashMap<>();
 
     roleAssignmentExtractor
       .getRoleAssignmentsForUser()
       .stream()
-      .filter(roleAssignment ->
-        List.of(ROLE_EDIT_SX, ROLE_EDIT_EXTRAJOURNEYS).contains(roleAssignment.getRole())
-      )
+      .filter(roleAssignment -> ROLE_EDIT_DEVIATIONS.equals(roleAssignment.getRole()))
       .forEach(roleAssignment -> {
         codespaceMap.putIfAbsent(roleAssignment.getOrganisation(), new HashSet<>());
-        codespaceMap.get(roleAssignment.getOrganisation()).add(roleAssignment.getRole());
+        codespaceMap
+          .get(roleAssignment.getOrganisation())
+          .add(roleAssignment.getEntityClassifications());
       });
 
     return codespaceMap
@@ -73,56 +86,87 @@ public class DefaultEnlilAuthorizationService<T>
       .toList();
   }
 
-  private List<Permission> getPermissions(String role) {
-    if (ROLE_EDIT_SX.equals(role)) {
-      return List.of(Permission.MESSAGES, Permission.CANCELLATIONS);
-    } else if (ROLE_EDIT_EXTRAJOURNEYS.equals(role)) {
-      return List.of(Permission.EXTRAJOURNEYS);
-    } else {
-      throw new IllegalArgumentException("Unsupported role: " + role);
+  private List<Permission> getPermissions(
+    Map<String, List<String>> entityClassifications
+  ) {
+    var permissions = new ArrayList<Permission>();
+    if (entityClassifications.containsKey(TYPE_OF_ENTITY_DEVIATION_TYPE)) {
+      if (
+        entityClassifications
+          .get(TYPE_OF_ENTITY_DEVIATION_TYPE)
+          .contains(TYPE_OF_ENTITY_DEVIATION_MESSAGE)
+      ) {
+        permissions.add(Permission.MESSAGES);
+      }
+      if (
+        entityClassifications
+          .get(TYPE_OF_ENTITY_DEVIATION_TYPE)
+          .contains(TYPE_OF_ENTITY_DEVIATION_CANCELLATION)
+      ) {
+        permissions.add(Permission.CANCELLATIONS);
+      }
+      if (
+        entityClassifications
+          .get(TYPE_OF_ENTITY_DEVIATION_TYPE)
+          .contains(TYPE_OF_ENTITY_DEVIATION_EXTRA_JOURNEY)
+      ) {
+        permissions.add(Permission.EXTRAJOURNEYS);
+      }
     }
+    return permissions;
   }
 
   @Override
   public boolean hasAccessToCodespaceForPermission(T providerId, Permission permission) {
+    if (isAdministrator()) {
+      return true;
+    }
+
     String providerOrganisation = getProviderOrganisationById.apply(providerId);
     if (providerOrganisation == null) {
       return false;
     }
 
-    if (
-      Permission.MESSAGES.equals(permission) ||
-      Permission.CANCELLATIONS.equals(permission)
-    ) {
-      return roleAssignmentExtractor
-        .getRoleAssignmentsForUser()
-        .stream()
-        .anyMatch(roleAssignment ->
-          matchProviderRole(roleAssignment, ROLE_EDIT_SX, providerOrganisation)
-        );
-    } else if (Permission.EXTRAJOURNEYS.equals(permission)) {
-      return roleAssignmentExtractor
-        .getRoleAssignmentsForUser()
-        .stream()
-        .anyMatch(roleAssignment ->
-          matchProviderRole(roleAssignment, ROLE_EDIT_EXTRAJOURNEYS, providerOrganisation)
-        );
-    } else {
-      throw new IllegalArgumentException("Unsupported permission: " + permission);
-    }
+    return roleAssignmentExtractor
+      .getRoleAssignmentsForUser()
+      .stream()
+      .anyMatch(roleAssignment -> {
+        if (
+          roleAssignment.getRole().equals(ROLE_EDIT_DEVIATIONS) &&
+          roleAssignment
+            .getEntityClassifications()
+            .containsKey(TYPE_OF_ENTITY_DEVIATION_TYPE)
+        ) {
+          var entityTypes = roleAssignment
+            .getEntityClassifications()
+            .get(TYPE_OF_ENTITY_DEVIATION_TYPE);
+          if (
+            Permission.MESSAGES.equals(permission) &&
+            entityTypes.contains(TYPE_OF_ENTITY_DEVIATION_MESSAGE)
+          ) {
+            return true;
+          }
+          if (
+            Permission.CANCELLATIONS.equals(permission) &&
+            entityTypes.contains(TYPE_OF_ENTITY_DEVIATION_CANCELLATION)
+          ) {
+            return true;
+          }
+          if (
+            Permission.EXTRAJOURNEYS.equals(permission) &&
+            entityTypes.contains(TYPE_OF_ENTITY_DEVIATION_EXTRA_JOURNEY)
+          ) {
+            return true;
+          }
+        }
+        return false;
+      });
   }
 
-  /**
-   * Return true if the role assignment gives access to the given role for the given provider.
-   */
-  private static boolean matchProviderRole(
-    RoleAssignment roleAssignment,
-    String role,
-    String providerOrganisation
-  ) {
-    return (
-      role.equals(roleAssignment.getRole()) &&
-      providerOrganisation.equals(roleAssignment.getOrganisation())
-    );
+  private boolean isAdministrator() {
+    return roleAssignmentExtractor
+      .getRoleAssignmentsForUser()
+      .stream()
+      .anyMatch(roleAssignment -> ROLE_ADMIN_DEVIATIONS.equals(roleAssignment.getRole()));
   }
 }
