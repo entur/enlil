@@ -24,11 +24,6 @@ public class DefaultEnlilAuthorizationService<T>
   private static final String TYPE_OF_ENTITY_DEVIATION_MESSAGE = "DeviationMessage";
   private static final String TYPE_OF_ENTITY_DEVIATION_CANCELLATION = "Cancellation";
   private static final String TYPE_OF_ENTITY_DEVIATION_EXTRA_JOURNEY = "ExtraJourney";
-  private static final List<Permission> ALL_PERMISSIONS = List.of(
-    Permission.MESSAGES,
-    Permission.CANCELLATIONS,
-    Permission.EXTRAJOURNEYS
-  );
 
   private final Function<T, String> getProviderOrganisationById;
   private final RoleAssignmentExtractor roleAssignmentExtractor;
@@ -52,10 +47,6 @@ public class DefaultEnlilAuthorizationService<T>
 
   @Override
   public List<Codespace> getAllowedCodespaces() {
-    if (isAdministrator()) {
-      return List.of(new Codespace("*", ALL_PERMISSIONS));
-    }
-
     Map<String, Set<Map<String, List<String>>>> codespaceMap = new HashMap<>();
 
     roleAssignmentExtractor
@@ -163,7 +154,7 @@ public class DefaultEnlilAuthorizationService<T>
       });
   }
 
-  private boolean isAdministrator() {
+  public boolean isAdministrator() {
     return roleAssignmentExtractor
       .getRoleAssignmentsForUser()
       .stream()

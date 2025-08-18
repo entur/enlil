@@ -25,4 +25,9 @@ public class UserContextServiceStub implements UserContextService {
   public List<Codespace> getAllowedCodespaces() {
     return List.of();
   }
+
+  @Override
+  public boolean isAdministrator() {
+    return false;
+  }
 }

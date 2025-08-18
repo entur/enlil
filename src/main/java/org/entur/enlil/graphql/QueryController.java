@@ -5,7 +5,6 @@ import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.model.PtSituationElementEntity;
 import org.entur.enlil.repository.EstimatedVehicleJourneyRepository;
 import org.entur.enlil.repository.SituationElementRepository;
-import org.entur.enlil.security.model.Permission;
 import org.entur.enlil.security.model.UserContext;
 import org.entur.enlil.security.spi.UserContextService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -34,7 +33,10 @@ public class QueryController {
 
   @QueryMapping
   public UserContext userContext() {
-    return new UserContext(userContextService.getAllowedCodespaces());
+    return new UserContext(
+      userContextService.getAllowedCodespaces(),
+      userContextService.isAdministrator()
+    );
   }
 
   @QueryMapping

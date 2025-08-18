@@ -44,4 +44,9 @@ public class EnturUserContextService implements UserContextService {
   public List<Codespace> getAllowedCodespaces() {
     return authorizationService.getAllowedCodespaces();
   }
+
+  @Override
+  public boolean isAdministrator() {
+    return authorizationService.isAdministrator();
+  }
 }

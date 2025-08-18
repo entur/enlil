@@ -14,6 +14,9 @@ type UserContext {
 
     # Codespaces that the current user has access to
     allowedCodespaces: [Codespace]
+
+    # Is the user an administrator?
+    isAdmin: Boolean!
 }
 
 type Codespace {
