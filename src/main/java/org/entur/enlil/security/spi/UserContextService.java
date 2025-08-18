@@ -9,4 +9,5 @@ public interface UserContextService {
   boolean hasAccessToCodespaceForCancellations(String codespace);
   boolean hasAccessToCodespaceForExtrajourneys(String codespace);
   List<Codespace> getAllowedCodespaces();
+  boolean isAdministrator();
 }
