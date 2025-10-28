@@ -24,7 +24,7 @@
 
         <entur.helpers.version>5.47.0</entur.helpers.version>
 
-        <spring-cloud-gcp-dependencies.version>5.13.6</spring-cloud-gcp-dependencies.version>
+        <spring-cloud-gcp-dependencies.version>5.13.7</spring-cloud-gcp-dependencies.version>
         <net.datafaker.version>2.5.3</net.datafaker.version>
         <testcontainers-bom.version>1.21.3</testcontainers-bom.version>
         <jakarta-xml-bind-api.version>4.0.4</jakarta-xml-bind-api.version>
