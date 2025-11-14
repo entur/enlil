@@ -26,7 +26,7 @@
 
         <spring-cloud-gcp-dependencies.version>5.13.7</spring-cloud-gcp-dependencies.version>
         <net.datafaker.version>2.5.3</net.datafaker.version>
-        <testcontainers-bom.version>1.21.3</testcontainers-bom.version>
+        <testcontainers-bom.version>2.0.2</testcontainers-bom.version>
         <jakarta-xml-bind-api.version>4.0.4</jakarta-xml-bind-api.version>
         <jaxb-runtime.version>4.0.6</jaxb-runtime.version>
         <siri-java-model.version>2.0.1</siri-java-model.version>
