@@ -5,11 +5,9 @@ configMap:
   firestoreProjectId: ent-enlil-tst
   firestoreDatabaseId: default
   auth0:
-    ror:
-      url: https://ror-entur-staging.eu.auth0.com/
-      audience: https://ror.api.staging.entur.io
     partner:
       url: https://partner.staging.entur.org/
+      audience: https://api.staging.entur.io,https://ror.api.staging.entur.io
     client:
       clientId: dlC6Rk3y83oMauMD4MkJVYgyui25oV9x
       tokenUri: https://internal.staging.entur.org/oauth/token
