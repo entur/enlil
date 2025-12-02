@@ -6,7 +6,6 @@ import java.util.List;
 import org.entur.enlil.security.spi.UserContextService;
 import org.entur.oauth2.AuthorizedWebClientBuilder;
 import org.entur.oauth2.JwtRoleAssignmentExtractor;
-import org.entur.oauth2.RorAuthenticationConverter;
 import org.entur.oauth2.multiissuer.MultiIssuerAuthenticationManagerResolverBuilder;
 import org.entur.oauth2.user.JwtUserInfoExtractor;
 import org.entur.ror.permission.RemoteBabaRoleAssignmentExtractor;
@@ -21,17 +20,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 @Profile("entur")
 public class EnturSecurityConfiguration {
-
-  @Bean
-  public JwtAuthenticationConverter customJwtAuthenticationConverter() {
-    return new RorAuthenticationConverter();
-  }
 
   @ConditionalOnProperty(
     value = "enlil.security.role.assignment.extractor",
