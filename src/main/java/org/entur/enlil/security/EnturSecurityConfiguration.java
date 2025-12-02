@@ -1,6 +1,8 @@
 package org.entur.enlil.security;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
 import org.entur.enlil.security.spi.UserContextService;
 import org.entur.oauth2.AuthorizedWebClientBuilder;
 import org.entur.oauth2.JwtRoleAssignmentExtractor;
@@ -103,8 +105,15 @@ public class EnturSecurityConfiguration {
   ) {
     return new MultiIssuerAuthenticationManagerResolverBuilder()
       .withEnturPartnerAuth0Issuer(enturPartnerAuth0Issuer)
-      .withEnturPartnerAuth0Audience(enturPartnerAuth0Audience)
+      .withEnturPartnerAuth0Audiences(parseAudiences(enturPartnerAuth0Audience))
       .build();
+  }
+
+  private List<String> parseAudiences(String audiences) {
+    if (audiences == null || audiences.trim().isEmpty()) {
+      return List.of();
+    }
+    return Arrays.asList(audiences.split(","));
   }
 
   @Bean
