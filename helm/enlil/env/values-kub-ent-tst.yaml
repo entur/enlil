@@ -11,7 +11,7 @@ configMap:
     client:
       clientId: dlC6Rk3y83oMauMD4MkJVYgyui25oV9x
       tokenUri: https://internal.staging.entur.org/oauth/token
-      audience: https://ror.api.staging.entur.io
+      audience: https://api.staging.entur.io
   baba:
     service: http://baba.tst.entur.internal
 

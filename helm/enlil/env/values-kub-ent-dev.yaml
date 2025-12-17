@@ -11,7 +11,7 @@ configMap:
     client:
       clientId: EnNS93dEDRnhBELa5oubxKd5Vd5WYWM7
       tokenUri: https://internal.dev.entur.org/oauth/token
-      audience: https://ror.api.dev.entur.io
+      audience: https://api.dev.entur.io
 
   baba:
     service: http://baba.dev.entur.internal
