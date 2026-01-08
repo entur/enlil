@@ -7,7 +7,7 @@ configMap:
   auth0:
     partner:
       url: https://partner.staging.entur.org/
-      audience: https://api.staging.entur.io,https://ror.api.staging.entur.io
+      audience: https://api.staging.entur.io
     client:
       clientId: dlC6Rk3y83oMauMD4MkJVYgyui25oV9x
       tokenUri: https://internal.staging.entur.org/oauth/token
