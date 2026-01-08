@@ -7,7 +7,7 @@ configMap:
   auth0:
     partner:
       url: https://partner.entur.org/
-      audience: https://api.entur.io,https://ror.api.entur.io
+      audience: https://api.entur.io
     client:
       clientId: 8uzKNqUNH4N0Su5DhgFGEOysBxbiLw0j
       tokenUri: https://internal.entur.org/oauth/token
