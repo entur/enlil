@@ -27,8 +27,8 @@ jobs:
           distribution: liberica
           cache: 'maven'
         env:
-          GITHUB_ACTOR: ${{ secrets.ARTIFACTORY_USER }}
-          GITHUB_TOKEN: ${{ secrets.ARTIFACTORY_APIKEY }}
+          GITHUB_ACTOR: ${{ secrets.ARTIFACTORY_AUTH_USER }}
+          GITHUB_TOKEN: ${{ secrets.ARTIFACTORY_AUTH_TOKEN }}
       - run: |
           mvn verify -Dprettier.nodePath=node -Dprettier.npmPath=npm
       - run: |
