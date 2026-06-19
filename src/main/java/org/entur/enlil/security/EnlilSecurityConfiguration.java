@@ -33,7 +33,7 @@ public class EnlilSecurityConfiguration {
   public SecurityFilterChain filterChain(
     HttpSecurity http,
     AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver
-  ) throws Exception {
+  ) {
     return http
       .csrf(csrf -> csrf.ignoringRequestMatchers("/siri"))
       .authorizeHttpRequests(auth ->
