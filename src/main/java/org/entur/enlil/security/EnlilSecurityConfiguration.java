@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -34,20 +33,20 @@ public class EnlilSecurityConfiguration {
   public SecurityFilterChain filterChain(
     HttpSecurity http,
     AuthenticationManagerResolver<HttpServletRequest> authenticationManagerResolver
-  ) throws Exception {
+  ) {
     return http
       .csrf(csrf -> csrf.ignoringRequestMatchers("/siri"))
       .authorizeHttpRequests(auth ->
         auth
-          .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/prometheus"))
+          .requestMatchers("/actuator/prometheus")
           .permitAll()
-          .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/health"))
+          .requestMatchers("/actuator/health")
           .permitAll()
-          .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/health/liveness"))
+          .requestMatchers("/actuator/health/liveness")
           .permitAll()
-          .requestMatchers(AntPathRequestMatcher.antMatcher("/actuator/health/readiness"))
+          .requestMatchers("/actuator/health/readiness")
           .permitAll()
-          .requestMatchers(AntPathRequestMatcher.antMatcher("/siri"))
+          .requestMatchers("/siri")
           .permitAll()
           .anyRequest()
           .authenticated()
