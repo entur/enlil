@@ -7,8 +7,6 @@ import static org.entur.enlil.faker.EstimatedVehicleJourneyProvider.estimatedVeh
 
 import au.com.origin.snapshots.Expect;
 import au.com.origin.snapshots.junit5.SnapshotExtension;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.firestore.Firestore;
@@ -30,10 +28,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.graphql.tester.AutoConfigureGraphQlTester;
+import org.springframework.boot.graphql.test.autoconfigure.tester.AutoConfigureGraphQlTester;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.graphql.test.tester.GraphQlTester;
@@ -47,6 +45,8 @@ import org.testcontainers.gcloud.FirestoreEmulatorContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 import uk.org.siri.siri21.Siri;
 
 @ExtendWith(SpringExtension.class)
@@ -104,8 +104,10 @@ class EnlilApplicationIntegrationTests {
   }
 
   @AfterEach
-  void clearFirestoreEmulator() {
-    firestore.recursiveDelete(firestore.collection("codespaces"));
+  void clearFirestoreEmulator() throws ExecutionException, InterruptedException {
+    // Await completion so the emulator is fully cleared before the next test runs,
+    // otherwise the deletion races subsequent tests and leaks data across them.
+    firestore.recursiveDelete(firestore.collection("codespaces")).get();
   }
 
   @Test
