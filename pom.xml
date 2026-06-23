@@ -97,13 +97,15 @@
             <artifactId>spring-boot-starter-graphql</artifactId>
         </dependency>
 
-        <!-- Provides the reactive WebClient autoconfiguration (WebClient.Builder bean).
-             Required by AuthorizedWebClientBuilder in EnturSecurityConfiguration.
-             In Spring Boot 4 this autoconfig moved into its own module and is no
-             longer active just because spring-webflux is transitively on the classpath. -->
+        <!-- Provides WebClientAutoConfiguration (the WebClient.Builder bean), required by
+             AuthorizedWebClientBuilder in EnturSecurityConfiguration. In Spring Boot 4 the
+             reactive WebClient autoconfig was split into its own module and is no longer
+             active just because spring-webflux is transitively on the classpath. This module
+             pulls in spring-webflux + the reactive http-client without the full WebFlux
+             server stack (a JDK ClientHttpConnector is used as the transport). -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
+            <artifactId>spring-boot-webclient</artifactId>
         </dependency>
 
         <dependency>
