@@ -1,5 +1,5 @@
 module "init" {
-  source      = "github.com/entur/terraform-google-init//modules/init?ref=v0.3.0"
+  source      = "github.com/entur/terraform-google-init//modules/init?ref=v1.1.1"
   app_id      = "enlil"
   environment = var.environment
 }
@@ -17,9 +17,9 @@ resource "google_firestore_database" "firestore_db" {
 }
 
 resource "google_firestore_index" "firestore_db_index" {
-  project    = var.project
-  database   = google_firestore_database.firestore_db.name
-  collection = "messages"
+  project     = var.project
+  database    = google_firestore_database.firestore_db.name
+  collection  = "messages"
   query_scope = "COLLECTION_GROUP"
 
   fields {
@@ -41,19 +41,19 @@ resource "google_firestore_field" "messages_overrides" {
 
   index_config {
     indexes {
-      order = "ASCENDING"
+      order       = "ASCENDING"
       query_scope = "COLLECTION"
     }
     indexes {
-      order = "DESCENDING"
+      order       = "DESCENDING"
       query_scope = "COLLECTION"
     }
     indexes {
       array_config = "CONTAINS"
-      query_scope = "COLLECTION"
+      query_scope  = "COLLECTION"
     }
     indexes {
-      order = "ASCENDING"
+      order       = "ASCENDING"
       query_scope = "COLLECTION_GROUP"
     }
   }
@@ -67,19 +67,19 @@ resource "google_firestore_field" "cancellations_overrides" {
 
   index_config {
     indexes {
-      order = "ASCENDING"
+      order       = "ASCENDING"
       query_scope = "COLLECTION"
     }
     indexes {
-      order = "DESCENDING"
+      order       = "DESCENDING"
       query_scope = "COLLECTION"
     }
     indexes {
       array_config = "CONTAINS"
-      query_scope = "COLLECTION"
+      query_scope  = "COLLECTION"
     }
     indexes {
-      order = "ASCENDING"
+      order       = "ASCENDING"
       query_scope = "COLLECTION_GROUP"
     }
   }
@@ -93,19 +93,19 @@ resource "google_firestore_field" "extrajourneys_overrides" {
 
   index_config {
     indexes {
-      order = "ASCENDING"
+      order       = "ASCENDING"
       query_scope = "COLLECTION"
     }
     indexes {
-      order = "DESCENDING"
+      order       = "DESCENDING"
       query_scope = "COLLECTION"
     }
     indexes {
       array_config = "CONTAINS"
-      query_scope = "COLLECTION"
+      query_scope  = "COLLECTION"
     }
     indexes {
-      order = "ASCENDING"
+      order       = "ASCENDING"
       query_scope = "COLLECTION_GROUP"
     }
   }
