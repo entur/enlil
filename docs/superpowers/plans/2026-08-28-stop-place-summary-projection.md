@@ -40,6 +40,14 @@ Modified: `graphql/QueryController.java`, `resources/graphql/schema.graphqls`, `
 
 **Formatting note (enlil):** `prettier-maven-plugin` runs with goal `write` during the build, so `mvn compile` reformats sources automatically; CI runs it with `check`. Do not hand-format — build, then commit whatever prettier produced.
 
+**Local Docker note (enlil):** `EnlilApplicationIntegrationTests` uses testcontainers. On a colima
+setup testcontainers cannot find the daemon by default, and the test errors with *"Could not find a
+valid Docker environment"*. Prefix Maven runs with:
+
+```
+DOCKER_HOST=unix://$HOME/.colima/default/docker.sock TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+```
+
 ---
 
 ### Task 1: Add the Caffeine dependency
@@ -933,9 +941,9 @@ In `helm/enlil/env/values-kub-ent-prd.yaml`:
   stopPlacesUrl: https://api.entur.io/stop-places/v1/read
 ```
 
-**Confirm before merging:** the tst → `api.staging` mapping is taken from nirgali's
-`.github/environments/config-staging.json` and has not been verified against enlil's own
-environment conventions. Check that enlil's tst environment really targets staging.
+**Resolved:** the tst → `api.staging` mapping is confirmed by enlil's own tst values file, which
+already points `auth0.partner.audience`, `auth0.client.tokenUri` and `auth0.client.audience` at
+`staging`. No longer an open question.
 
 **Open question, not blocking:** enlil runs in the same cluster as the upstream service, so
 an in-cluster URL would avoid the external load balancer entirely. That is an infrastructure
@@ -1021,10 +1029,19 @@ class StopPlaceGraphQlTest {
 Run: `./mvnw -q test -Dtest=StopPlaceGraphQlTest`
 Expected: PASS.
 
-If the context fails to start because of Firestore or security wiring, mirror whatever
-`EnlilApplicationIntegrationTests` does — it already boots the full context and configures a
-Firestore emulator via testcontainers plus `MockedClockConfiguration`. Reuse its annotations
-rather than inventing new ones.
+**Deviation from the original plan:** a full `@SpringBootTest` does not work here — the context
+fails with *"No qualifying bean of type UserContextService"*, because that bean comes from a
+`@Profile("test")` configuration and the full context additionally drags in Firestore. Use the
+GraphQL slice instead, which loads only the schema and the named controller:
+
+```java
+@GraphQlTest(QueryController.class)
+```
+
+from `org.springframework.boot.graphql.test.autoconfigure.GraphQlTest`. `QueryController`'s other
+collaborators (`SituationElementRepository`, `EstimatedVehicleJourneyRepository`,
+`UserContextService`) then each need a `@MockitoBean`. This runs in about 2 seconds and needs no
+Docker.
 
 - [ ] **Step 3: Run the whole suite**
 

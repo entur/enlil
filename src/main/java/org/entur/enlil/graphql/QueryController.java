@@ -1,12 +1,15 @@
 package org.entur.enlil.graphql;
 
 import java.util.Collection;
+import java.util.List;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
 import org.entur.enlil.model.PtSituationElementEntity;
 import org.entur.enlil.repository.EstimatedVehicleJourneyRepository;
 import org.entur.enlil.repository.SituationElementRepository;
 import org.entur.enlil.security.model.UserContext;
 import org.entur.enlil.security.spi.UserContextService;
+import org.entur.enlil.stopplace.StopPlaceService;
+import org.entur.enlil.stopplace.StopPlaceSummary;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -20,15 +23,18 @@ public class QueryController {
   private final SituationElementRepository situationElementRepository;
   private final EstimatedVehicleJourneyRepository estimatedVehicleJourneyRepository;
   private final UserContextService userContextService;
+  private final StopPlaceService stopPlaceService;
 
   public QueryController(
     SituationElementRepository situationElementRepository,
     EstimatedVehicleJourneyRepository estimatedVehicleJourneyRepository,
-    UserContextService userContextService
+    UserContextService userContextService,
+    StopPlaceService stopPlaceService
   ) {
     this.situationElementRepository = situationElementRepository;
     this.estimatedVehicleJourneyRepository = estimatedVehicleJourneyRepository;
     this.userContextService = userContextService;
+    this.stopPlaceService = stopPlaceService;
   }
 
   @QueryMapping
@@ -71,5 +77,14 @@ public class QueryController {
     return estimatedVehicleJourneyRepository
       .getExtrajourneysByCodespace(codespace, authority, showCompletedTrips)
       .toList();
+  }
+
+  /**
+   * Not codespace-scoped, so no {@code @PreAuthorize} — this matches
+   * {@code userContext}. Authentication is enforced at the HTTP layer.
+   */
+  @QueryMapping
+  public List<StopPlaceSummary> stopPlaces(@Argument List<String> ids) {
+    return stopPlaceService.getStopPlaceSummaries(ids);
   }
 }
