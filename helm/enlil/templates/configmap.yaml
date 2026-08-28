@@ -42,6 +42,7 @@ data:
 
     # Upstream stop place read API
     enlil.stop-places.url={{ .Values.configMap.stopPlacesUrl }}
+    enlil.stop-places.max-ids={{ .Values.configMap.stopPlacesMaxIds | default 10000 }}
 
     # Beans and profiles
     spring.profiles.active=entur,scheduling
