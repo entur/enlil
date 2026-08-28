@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,35 +21,34 @@ public class StopPlaceService {
 
   private static final Logger log = LoggerFactory.getLogger(StopPlaceService.class);
 
-  /**
-   * Counted after deduplication, so a redundant list is corrected rather than
-   * refused. Matches the upstream service's own default count ceiling.
-   */
-  static final int MAX_DISTINCT_IDS = 1000;
-
   private final StopPlaceClient client;
   private final Cache<String, StopPlaceRecord> stopPlaceCache;
   private final Cache<String, String> topographicNameCache;
 
+  /**
+   * Counted after deduplication, so a redundant list is corrected rather than
+   * refused. This is a runaway-input backstop, not a cost control: a single
+   * organisation legitimately has thousands of distinct stop places, and each one
+   * costs only a small cached record plus 1/200th of an upstream request.
+   */
+  private final int maxDistinctIds;
+
   public StopPlaceService(
     StopPlaceClient client,
     @Qualifier("stopPlaceCache") Cache<String, StopPlaceRecord> stopPlaceCache,
-    @Qualifier("topographicNameCache") Cache<String, String> topographicNameCache
+    @Qualifier("topographicNameCache") Cache<String, String> topographicNameCache,
+    @Value("${enlil.stop-places.max-ids:10000}") int maxDistinctIds
   ) {
     this.client = client;
     this.stopPlaceCache = stopPlaceCache;
     this.topographicNameCache = topographicNameCache;
+    this.maxDistinctIds = maxDistinctIds;
   }
 
   public List<StopPlaceSummary> getStopPlaceSummaries(Collection<String> ids) {
     Set<String> distinctIds = new LinkedHashSet<>(ids);
-    if (distinctIds.size() > MAX_DISTINCT_IDS) {
-      throw new IllegalArgumentException(
-        "ids contains " +
-        distinctIds.size() +
-        " distinct values, maximum is " +
-        MAX_DISTINCT_IDS
-      );
+    if (distinctIds.size() > maxDistinctIds) {
+      throw new TooManyStopPlaceIdsException(distinctIds.size(), maxDistinctIds);
     }
 
     Map<String, StopPlaceRecord> stopPlaces = resolveStopPlaces(distinctIds);

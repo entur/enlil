@@ -18,6 +18,10 @@ class StopPlaceServiceTest {
   private static final String TOPO_A = "KVE:TopographicPlace:3412";
 
   private StopPlaceService serviceFor(StopPlaceClientStub client) {
+    return serviceFor(client, 10000);
+  }
+
+  private StopPlaceService serviceFor(StopPlaceClientStub client, int maxIds) {
     return new StopPlaceService(
       client,
       Caffeine
@@ -29,7 +33,8 @@ class StopPlaceServiceTest {
         .newBuilder()
         .expireAfterWrite(Duration.ofHours(24))
         .maximumSize(1000)
-        .build()
+        .build(),
+      maxIds
     );
   }
 
@@ -88,16 +93,33 @@ class StopPlaceServiceTest {
   }
 
   @Test
-  void rejectsMoreThanOneThousandDistinctIds() {
+  void acceptsARealisticOrganisationSizedStopList() {
+    // Production sends ~1840 distinct stop places for a single organisation.
+    // The original 1000 ceiling rejected that outright.
+    Map<String, StopPlaceRecord> stopPlaces = new HashMap<>();
+    List<String> requested = new ArrayList<>();
+    for (int i = 0; i < 1840; i++) {
+      String stopId = "NSR:StopPlace:" + i;
+      stopPlaces.put(stopId, new StopPlaceRecord(stopId, "bus", null));
+      requested.add(stopId);
+    }
+    StopPlaceClientStub client = new StopPlaceClientStub(stopPlaces, Map.of());
+
+    assertThat(serviceFor(client).getStopPlaceSummaries(requested)).hasSize(1840);
+  }
+
+  @Test
+  void rejectsBeyondTheConfiguredCeiling() {
     StopPlaceClientStub client = new StopPlaceClientStub(Map.of(), Map.of());
     List<String> tooMany = IntStream
       .range(0, 1001)
       .mapToObj(i -> "NSR:StopPlace:" + i)
       .toList();
 
-    assertThatThrownBy(() -> serviceFor(client).getStopPlaceSummaries(tooMany))
-      .isInstanceOf(IllegalArgumentException.class)
-      .hasMessageContaining("1001");
+    assertThatThrownBy(() -> serviceFor(client, 1000).getStopPlaceSummaries(tooMany))
+      .isInstanceOf(TooManyStopPlaceIdsException.class)
+      .hasMessageContaining("1001")
+      .hasMessageContaining("1000");
   }
 
   @Test
