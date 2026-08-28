@@ -40,6 +40,9 @@ data:
     enlil.security.role.assignment.extractor={{ .Values.configMap.roleAssignmentExtractor }}
     user.permission.rest.service.url={{ .Values.configMap.baba.service }}/services/organisations/users
 
+    # Upstream stop place read API
+    enlil.stop-places.url={{ .Values.configMap.stopPlacesUrl }}
+
     # Beans and profiles
     spring.profiles.active=entur,scheduling
     spring.main.allow-bean-definition-overriding=true

@@ -16,3 +16,5 @@ configMap:
     service: http://baba.prd.entur.internal
 
   roleAssignmentExtractor: baba
+
+  stopPlacesUrl: https://api.entur.io/stop-places/v1/read

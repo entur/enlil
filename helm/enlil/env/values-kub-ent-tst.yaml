@@ -16,3 +16,5 @@ configMap:
     service: http://baba.tst.entur.internal
 
   roleAssignmentExtractor: baba
+
+  stopPlacesUrl: https://api.staging.entur.io/stop-places/v1/read

@@ -8,6 +8,15 @@ type Query {
     situationElements(codespace: String!, authority: String!): [SituationElement]
     cancellations(codespace: String!, authority: String!): [Cancellation]
     extrajourneys(codespace: String!, authority: String!, showCompletedTrips: Boolean!): [Extrajourney]
+    stopPlaces(ids: [ID!]!): [StopPlaceSummary!]!
+}
+
+# Projection of the upstream stop place API, carrying only the fields the stop
+# picker renders. Deliberately excludes geometry.
+type StopPlaceSummary {
+    id: ID!
+    transportMode: String
+    topographicPlaceName: String
 }
 
 type UserContext {
