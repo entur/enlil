@@ -8,7 +8,7 @@ on:
       - master
 jobs:
   docker-lint:
-    uses: entur/gha-docker/.github/workflows/lint.yml@v1.11.0
+    uses: entur/gha-docker/.github/workflows/lint.yml@v1.12.0
   maven-verify:
     runs-on: ubuntu-24.04
     permissions:
@@ -20,7 +20,7 @@ jobs:
       # Example: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/4490450225/jobs/7897533439
       - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 24.19.0
+          node-version: 24.20.0
       - uses: actions/setup-java@v5.7.0
         with:
           java-version: 21.0.1+12
@@ -45,14 +45,14 @@ jobs:
           path: target/*.jar
   docker-build:
     needs: [docker-lint, maven-verify]
-    uses: entur/gha-docker/.github/workflows/build.yml@v1.11.0
+    uses: entur/gha-docker/.github/workflows/build.yml@v1.12.0
     with:
       build_artifact_name: artifact
       build_artifact_path: target
   docker-push:
     if: github.repository_owner == 'entur' && github.event_name == 'push'
     needs: [docker-build]
-    uses: entur/gha-docker/.github/workflows/push.yml@v1.11.0
+    uses: entur/gha-docker/.github/workflows/push.yml@v1.12.0
 
   helm-lint:
     runs-on: ubuntu-24.04
