@@ -1,0 +1,63 @@
+# publiccode.yml metadata, see https://yml.publiccode.tools/
+publiccodeYmlVersion: "0.7.0"
+
+name: Enlil
+url: https://github.com/entur/enlil
+
+platforms:
+  - web
+  - linux
+
+categories:
+  - data-collection
+  - communications
+
+developmentStatus: stable
+softwareType: standalone/backend
+
+organisation:
+  name: Entur AS
+  uri: https://entur.no
+
+usedBy:
+  - Norway (nationwide), Entur AS
+
+intendedAudience:
+  scope:
+    - transportation
+  countries:
+    - "NO"
+
+description:
+  en:
+    localisedName: Enlil
+    shortDescription: Backend for a lightweight real-time deviation system, serving SIRI-SX and SIRI-ET.
+    longDescription: >
+      Enlil is the backend of a lightweight system for reporting deviations in public transport. It lets transport
+      operators register situation messages, cancellations and extra journeys, and it publishes them as real-time
+      data to the Norwegian national journey planner. It is aimed at operators that have no real-time system of
+      their own.
+      Enlil consists of two parts: a GraphQL API used by the Nirgali front-end, where authorised users manage data
+      within their own codespace or organisation, and a REST endpoint that answers SIRI SituationExchangeRequest
+      and EstimatedTimetableRequest calls with SIRI-SX and SIRI-ET documents. Data is stored in Firestore.
+    documentation: https://github.com/entur/enlil/blob/master/README.md
+    features:
+      - GraphQL API for situation messages, cancellations and extra journeys
+      - SIRI-SX and SIRI-ET endpoint over HTTP
+      - Per-codespace authorisation for operators
+      - Firestore-backed storage
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Entur AS
+
+maintenance:
+  type: internal
+  contacts:
+    - name: Entur ROR (Open Data and Journey Planning)
+      email: kollektivdata@entur.org
+
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - en
