@@ -10,6 +10,8 @@ import au.com.origin.snapshots.junit5.SnapshotExtension;
 import com.google.api.gax.core.CredentialsProvider;
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.cloud.firestore.Firestore;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Clock;
 import java.time.Instant;
@@ -17,6 +19,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import org.entur.enlil.configuration.MockedClockConfiguration;
 import org.entur.enlil.model.EstimatedVehicleJourneyEntity;
@@ -80,9 +83,30 @@ class EnlilApplicationIntegrationTests {
 
   @Container
   private static final FirestoreEmulatorContainer firestoreEmulator =
-    new FirestoreEmulatorContainer(
-      DockerImageName.parse("gcr.io/google.com/cloudsdktool/cloud-sdk:317.0.0-emulators")
-    );
+    new FirestoreEmulatorContainer(firestoreEmulatorImage());
+
+  /**
+   * Reads the emulator image from testcontainers-images.properties, which Maven filters
+   * from the firestore-emulator.image property in pom.xml.
+   */
+  private static DockerImageName firestoreEmulatorImage() {
+    var properties = new Properties();
+    try (
+      var input = EnlilApplicationIntegrationTests.class.getResourceAsStream(
+          "/testcontainers-images.properties"
+        )
+    ) {
+      if (input == null) {
+        throw new IllegalStateException(
+          "testcontainers-images.properties is missing from the test classpath"
+        );
+      }
+      properties.load(input);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+    return DockerImageName.parse(properties.getProperty("firestore.emulator.image"));
+  }
 
   @DynamicPropertySource
   static void emulatorProperties(DynamicPropertyRegistry registry) {
