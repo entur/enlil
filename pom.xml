@@ -34,6 +34,11 @@
         <prettier-maven-plugin.version>0.22</prettier-maven-plugin.version>
         <plugin.prettier.goal>write</plugin.prettier.goal>
         <java-snapshot-testing.version>4.0.8</java-snapshot-testing.version>
+
+        <!-- Firestore emulator image for the integration tests. Google prunes old
+             cloud-sdk tags from gcr.io, so a stale pin here breaks the build. The value is
+             filtered into src/test/resources-filtered/testcontainers-images.properties. -->
+        <firestore-emulator.image>gcr.io/google.com/cloudsdktool/cloud-sdk:584.0.0-emulators</firestore-emulator.image>
     </properties>
 
     <distributionManagement>
@@ -247,6 +252,15 @@
         </dependency>
     </dependencies>
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>src/test/resources-filtered</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
