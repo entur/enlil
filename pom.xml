@@ -22,9 +22,9 @@
     <properties>
         <java.version>21</java.version>
 
-        <entur.helpers.version>7.3.0</entur.helpers.version>
+        <entur.helpers.version>7.4.0</entur.helpers.version>
 
-        <spring-cloud-gcp-dependencies.version>8.1.1</spring-cloud-gcp-dependencies.version>
+        <spring-cloud-gcp-dependencies.version>8.2.1</spring-cloud-gcp-dependencies.version>
         <net.datafaker.version>2.7.0</net.datafaker.version>
         <testcontainers-bom.version>2.0.5</testcontainers-bom.version>
         <jakarta-xml-bind-api.version>4.0.5</jakarta-xml-bind-api.version>
