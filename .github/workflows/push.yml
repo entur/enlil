@@ -8,7 +8,7 @@ on:
       - master
 jobs:
   docker-lint:
-    uses: entur/gha-docker/.github/workflows/lint.yml@v1.12.0
+    uses: entur/gha-docker/.github/workflows/lint.yml@v1.13.0
   maven-verify:
     runs-on: ubuntu-24.04
     permissions:
@@ -45,14 +45,14 @@ jobs:
           path: target/*.jar
   docker-build:
     needs: [docker-lint, maven-verify]
-    uses: entur/gha-docker/.github/workflows/build.yml@v1.12.0
+    uses: entur/gha-docker/.github/workflows/build.yml@v1.13.0
     with:
       build_artifact_name: artifact
       build_artifact_path: target
   docker-push:
     if: github.repository_owner == 'entur' && github.event_name == 'push'
     needs: [docker-build]
-    uses: entur/gha-docker/.github/workflows/push.yml@v1.12.0
+    uses: entur/gha-docker/.github/workflows/push.yml@v1.13.0
 
   helm-lint:
     runs-on: ubuntu-24.04
