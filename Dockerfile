@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine:25.0.4-9
+FROM bellsoft/liberica-openjdk-alpine:25.0.5.0.3-5
 
 RUN apk update && apk upgrade && apk add --no-cache \
     tini=0.19.0-r3
