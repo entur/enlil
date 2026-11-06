@@ -20,7 +20,7 @@ jobs:
       # Example: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/4490450225/jobs/7897533439
       - uses: actions/setup-node@v7.1.0
         with:
-          node-version: 24.22.2
+          node-version: 26.13.0
       # setup-java's liberica distribution can't select 21.0.13.0.3+5 (it maps to the same
       # semver as 21.0.13.0.2+5), so download the exact eMudhra-fixed build and install it.
       # SHA-256 computed from the tarball after checking it against BellSoft's published SHA-1.
