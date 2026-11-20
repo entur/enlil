@@ -10,7 +10,7 @@ jobs:
   docker-lint:
     uses: entur/gha-docker/.github/workflows/lint.yml@v1.13.0
   maven-verify:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
@@ -63,7 +63,7 @@ jobs:
     uses: entur/gha-docker/.github/workflows/push.yml@v1.13.0
 
   helm-lint:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
     steps:
