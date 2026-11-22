@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.entur.ror</groupId>
         <artifactId>superpom</artifactId>
-        <version>7.2.0</version>
+        <version>7.4.0</version>
     </parent>
 
     <groupId>org.entur</groupId>
@@ -24,7 +24,7 @@
 
         <entur.helpers.version>7.4.0</entur.helpers.version>
 
-        <spring-cloud-gcp-dependencies.version>8.3.0</spring-cloud-gcp-dependencies.version>
+        <spring-cloud-gcp-dependencies.version>8.3.1</spring-cloud-gcp-dependencies.version>
         <net.datafaker.version>2.7.0</net.datafaker.version>
         <testcontainers-bom.version>2.0.5</testcontainers-bom.version>
         <jakarta-xml-bind-api.version>4.0.5</jakarta-xml-bind-api.version>
