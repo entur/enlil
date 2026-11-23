@@ -51,7 +51,7 @@ jobs:
           path: target/*.jar
   docker-smoke:
     needs: [maven-verify]
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     permissions:
       contents: read
@@ -134,6 +134,28 @@ jobs:
       namespace: enlil
       release_name: enlil
     secrets: inherit
+
+  # Once this commit is in dev, older master runs still parked at an approval gate are
+  # superseded. Runs that are actively deploying (in_progress) are left alone.
+  cancel-superseded:
+    if: ${{ !cancelled() && needs.deploy-dev.result == 'success' && github.event_name == 'push' }}
+    needs: [ deploy-dev ]
+    runs-on: ubuntu-26.04
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel older runs waiting for approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run list -R "$GITHUB_REPOSITORY" --workflow push.yml --branch master \
+            --status waiting --limit 100 --json databaseId \
+            --jq ".[] | select(.databaseId < $GITHUB_RUN_ID) | .databaseId" |
+            while read -r id; do
+              echo "Cancelling superseded run $id"
+              gh run cancel "$id" -R "$GITHUB_REPOSITORY"
+            done
 
   approval-tst:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.ref == 'refs/heads/master' }}
