@@ -135,7 +135,7 @@ jobs:
   # Once this commit is in dev, older master runs still parked at an approval gate are
   # superseded. Runs that are actively deploying (in_progress) are left alone.
   cancel-superseded:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+    if: ${{ !cancelled() && needs.deploy-dev.result == 'success' && github.event_name == 'push' }}
     needs: [ deploy-dev ]
     runs-on: ubuntu-26.04
     timeout-minutes: 5
