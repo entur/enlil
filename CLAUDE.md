@@ -18,7 +18,7 @@
   - Spring Cloud GCP
 - **Database**: Google Cloud Firestore (NoSQL document database)
 - **Build Tool**: Maven
-- **Container**: Docker (Alpine-based with Liberica OpenJDK 21)
+- **Container**: Docker (distroless `gcr.io/distroless/java25-debian13`)
 - **Deployment**: Kubernetes (Helm charts), Terraform for infrastructure
 
 ### Key Dependencies
@@ -200,10 +200,16 @@ The service accepts SIRI XML requests and returns corresponding SIRI XML respons
 
 ### Containerization
 
-- Based on Bellsoft Liberica OpenJDK 21 Alpine
-- Uses `tini` as init system for proper signal handling
-- Non-root user (`appuser`) for security
-- Single JAR deployment
+- Multi-stage `Dockerfile`: a builder stage on the same distroless image extracts the Spring Boot
+  layered jar, and the runtime stage is `gcr.io/distroless/java25-debian13:nonroot` (Temurin JRE,
+  no shell or package manager), pinned by digest. CI builds with the same Temurin version
+- Dependencies (Maven, actions, Docker digest, Helm, Terraform) are updated by Dependabot
+  (`.github/dependabot.yml`), one PR per dependency
+- CI (`docker-smoke` job) boots the built image and checks for Spring's `using Java` startup line
+- JVM runs as PID 1; JVM flags are passed via `JDK_JAVA_OPTIONS` in the Helm chart
+- Non-root user (image default `nonroot`, overridden to uid 1000 by the pod securityContext)
+- No shell in the image: to inspect it, temporarily build with the `debug-nonroot` tag of the same
+  base image, or use `kubectl debug` with an ephemeral container in the cluster
 
 ### Kubernetes Deployment
 

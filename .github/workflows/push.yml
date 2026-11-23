@@ -8,31 +8,26 @@ on:
       - master
 jobs:
   docker-lint:
-    uses: entur/gha-docker/.github/workflows/lint.yml@v1.14.0
+    uses: entur/gha-docker/.github/workflows/lint.yml@v1
   maven-verify:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # nodejs is needed because the dynamic download of it via the prettier maven plugin often
       # times out
       # Example: https://github.com/opentripplanner/OpenTripPlanner/actions/runs/4490450225/jobs/7897533439
-      - uses: actions/setup-node@v7.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24.22.3
-      # setup-java's liberica distribution can't select 21.0.13.0.3+5 (it maps to the same
-      # semver as 21.0.13.0.2+5), so download the exact eMudhra-fixed build and install it.
-      # SHA-256 computed from the tarball after checking it against BellSoft's published SHA-1.
-      - name: Download Liberica JDK 21.0.13.0.3+5
-        run: |
-          curl --proto '=https' --tlsv1.2 -fsSL -o "$RUNNER_TEMP/liberica.tar.gz" "https://github.com/bell-sw/Liberica/releases/download/21.0.13.0.3+5/bellsoft-jdk21.0.13.0.3+5-linux-amd64.tar.gz"
-          echo "f6bac5c836223d91525360bfbb2e422b39f8fcebedafbc1adda27945934926da  $RUNNER_TEMP/liberica.tar.gz" | sha256sum -c -
-      - uses: actions/setup-java@v6.3.0
+          node-version: 24
+      # Same JDK as the distroless runtime image (Temurin). check-latest skips the runner's
+      # cached JDK, which can lag behind.
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
-          distribution: jdkfile
-          jdkFile: ${{ runner.temp }}/liberica.tar.gz
-          java-version: 21.0.13
+          distribution: temurin
+          java-version: 25
+          check-latest: true
           cache: 'maven'
       - run: |
           mvn verify -Dprettier.nodePath=node -Dprettier.npmPath=npm
@@ -48,26 +43,45 @@ jobs:
             -Dsonar.projectName=enlil \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${{ secrets.ENTUR_SONAR_PASSWORD }}
-      - uses: actions/upload-artifact@v7.0.2
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           path: target/*.jar
+  docker-smoke:
+    needs: [maven-verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: artifact
+          path: target
+      - run: docker build -t enlil:smoke .
+      # Nothing else in CI runs the image. Reaching Spring's startup line proves the JRE loaded the
+      # application bytecode; it then fails on config that only exists in the cluster, which is fine.
+      # A wrong class file version or an unusable base image never gets that far.
+      - run: |
+          timeout 180 docker run --rm enlil:smoke 2>&1 | tee smoke.log || true
+          grep -q "using Java" smoke.log
   docker-build:
     needs: [docker-lint, maven-verify]
-    uses: entur/gha-docker/.github/workflows/build.yml@v1.14.0
+    uses: entur/gha-docker/.github/workflows/build.yml@v1
     with:
       build_artifact_name: artifact
       build_artifact_path: target
   docker-push:
     if: github.repository_owner == 'entur' && github.event_name == 'push'
-    needs: [docker-build]
-    uses: entur/gha-docker/.github/workflows/push.yml@v1.14.0
+    needs: [docker-build, docker-smoke]
+    uses: entur/gha-docker/.github/workflows/push.yml@v1
 
   helm-lint:
     runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Helm lint against every env values file
         run: |
           for env in dev tst prd; do
@@ -75,13 +89,13 @@ jobs:
           done
 
   terraform-lint:
-    uses: entur/gha-terraform/.github/workflows/lint.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/lint.yml@v3
 
   tf-plan-dev:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
     needs: [ terraform-lint, docker-push ]
     name: Terraform Plan DEV
-    uses: entur/gha-terraform/.github/workflows/plan.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/plan.yml@v3
     with:
       environment: dev
 
@@ -100,7 +114,7 @@ jobs:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && needs.tf-plan-dev.outputs.has_changes == 'true' }}
     needs: [ tf-plan-dev, tf-approval-dev ]
     name: Terraform Apply DEV
-    uses: entur/gha-terraform/.github/workflows/apply.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/apply.yml@v3
     with:
       environment: dev
       has_changes: ${{ needs.tf-plan-dev.outputs.has_changes }}
@@ -108,7 +122,7 @@ jobs:
   deploy-dev:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.ref == 'refs/heads/master' }}
     needs: [ helm-lint, tf-plan-dev, tf-apply-dev, docker-push ]
-    uses: entur/gha-helm/.github/workflows/deploy.yml@v2.1.0
+    uses: entur/gha-helm/.github/workflows/deploy.yml@v2
     with:
       environment: dev
       image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
@@ -134,7 +148,7 @@ jobs:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
     needs: [ terraform-lint, approval-tst ]
     name: Terraform Plan TST
-    uses: entur/gha-terraform/.github/workflows/plan.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/plan.yml@v3
     with:
       environment: tst
 
@@ -153,7 +167,7 @@ jobs:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && needs.tf-plan-tst.outputs.has_changes == 'true' }}
     needs: [ tf-plan-tst, tf-approval-tst ]
     name: Terraform Apply TST
-    uses: entur/gha-terraform/.github/workflows/apply.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/apply.yml@v3
     with:
       environment: tst
       has_changes: ${{ needs.tf-plan-tst.outputs.has_changes }}
@@ -162,7 +176,7 @@ jobs:
   deploy-tst:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.ref == 'refs/heads/master' }}
     needs: [ approval-tst, tf-plan-tst, tf-apply-tst, docker-push ]
-    uses: entur/gha-helm/.github/workflows/deploy.yml@v2.1.0
+    uses: entur/gha-helm/.github/workflows/deploy.yml@v2
     with:
       environment: tst
       image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
@@ -188,7 +202,7 @@ jobs:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
     needs: [ terraform-lint, approval-prd ]
     name: Terraform Plan PRD
-    uses: entur/gha-terraform/.github/workflows/plan.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/plan.yml@v3
     with:
       environment: prd
 
@@ -207,7 +221,7 @@ jobs:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && needs.tf-plan-prd.outputs.has_changes == 'true' }}
     needs: [ tf-plan-prd, tf-approval-prd ]
     name: Terraform Apply PRD
-    uses: entur/gha-terraform/.github/workflows/apply.yml@v3.0.0
+    uses: entur/gha-terraform/.github/workflows/apply.yml@v3
     with:
       environment: prd
       has_changes: ${{ needs.tf-plan-prd.outputs.has_changes }}
@@ -216,7 +230,7 @@ jobs:
   deploy-prd:
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && github.ref == 'refs/heads/master' }}
     needs: [ approval-prd, tf-plan-prd, tf-apply-prd, docker-push ]
-    uses: entur/gha-helm/.github/workflows/deploy.yml@v2.1.0
+    uses: entur/gha-helm/.github/workflows/deploy.yml@v2
     with:
       environment: prd
       image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
