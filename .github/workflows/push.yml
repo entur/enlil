@@ -31,7 +31,10 @@ jobs:
           cache: 'maven'
       - run: |
           mvn verify -Dprettier.nodePath=node -Dprettier.npmPath=npm
-      - run: |
+      # Dependabot PRs don't get Actions secrets, so the Sonar token is empty there
+      - name: Sonar scan
+        if: github.actor != 'dependabot[bot]'
+        run: |
           mvn \
             org.jacoco:jacoco-maven-plugin:prepare-agent verify \
             org.jacoco:jacoco-maven-plugin:report sonar:sonar \
