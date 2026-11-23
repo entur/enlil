@@ -202,7 +202,9 @@ The service accepts SIRI XML requests and returns corresponding SIRI XML respons
 
 - Multi-stage `Dockerfile`: a builder stage on the same distroless image extracts the Spring Boot
   layered jar, and the runtime stage is `gcr.io/distroless/java25-debian13:nonroot` (Temurin JRE,
-  no shell or package manager). CI builds with the same Temurin version
+  no shell or package manager), pinned by digest. CI builds with the same Temurin version
+- Dependencies (Maven, actions, Docker digest, Helm, Terraform) are updated by Dependabot
+  (`.github/dependabot.yml`), one PR per dependency
 - CI (`docker-smoke` job) boots the built image and checks for Spring's `using Java` startup line
 - JVM runs as PID 1; JVM flags are passed via `JDK_JAVA_OPTIONS` in the Helm chart
 - Non-root user (image default `nonroot`, overridden to uid 1000 by the pod securityContext)
